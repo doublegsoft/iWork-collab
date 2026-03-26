@@ -10,10 +10,8 @@
 #include <string.h>
 #include <stdio.h>
 
-// Context pointer so our signal handler can clean it up
 static struct lws_context* context = NULL;
 
-// 1. Define the WebSocket Callback
 static int callback_minimal(struct lws* wsi, enum lws_callback_reasons reason,
                             void* user, void* in, size_t len) {
   switch (reason) {
@@ -63,7 +61,8 @@ static void signal_cb(uv_signal_t* handle, int signum) {
   uv_stop(handle->loop);
 }
 
-int main(void) {
+int main(void) 
+{
   struct lws_context_creation_info info;
   uv_loop_t* loop = uv_default_loop();
   
@@ -76,10 +75,6 @@ int main(void) {
   info.port = 8848;
   info.protocols = protocols;
   
-  // info.plugin_dirs = (const char *[]) {
-  //   "/Users/christian/export/local/works/doublegsoft.ai/iWork/03.Development/iWork-collab/3rd/libwebsockets-4.5.4/build/darwin/lib",           // common install path     // Apple Silicon Homebrew
-  //   NULL
-  // };
   info.options = LWS_SERVER_OPTION_LIBUV; 
   
   // Provide the existing libuv loop to LWS (Foreign loop)

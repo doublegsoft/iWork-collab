@@ -91,9 +91,18 @@ target_sources(perf PRIVATE
   test/perf.c
 )
 
-# 3. 链接库（最重要的一步）
 target_link_libraries(iWork-collab-test PRIVATE
   iWork-collab
   ${LIBWEBSOCKETS_LIBRARIES}
-  ${LIBUV_LIBRARIES}
+)
+
+add_executable(hello)
+
+target_sources(hello PRIVATE
+  test/hello.c
+)
+
+target_link_libraries(iWork-collab-test PRIVATE
+  iWork-collab
+  ${LIBWEBSOCKETS_LIBRARIES}
 )

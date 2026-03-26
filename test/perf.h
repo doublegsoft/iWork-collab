@@ -1,6 +1,10 @@
-#ifndef WS_PERF_H
-#define WS_PERF_H
-
+/*
+**    ▄▄▄▄  ▄▄▄  ▄▄▄▄                   
+** ▀▀ ▀███  ███  ███▀            ▄▄     
+** ██  ███  ███  ███ ▄███▄ ████▄ ██ ▄█▀ 
+** ██  ███▄▄███▄▄███ ██ ██ ██ ▀▀ ████   
+** ██▄  ▀████▀████▀  ▀███▀ ██    ██ ▀█▄ 
+*/
 #include <stdint.h>
 #include <stdbool.h>
 #include <time.h>
@@ -241,5 +245,3 @@ int evloop_add(event_loop_t* loop, int fd, void* data, bool write);
 int evloop_mod(event_loop_t* loop, int fd, void* data, bool write);
 int evloop_del(event_loop_t* loop, int fd);
 int evloop_wait(event_loop_t* loop, int timeout_ms);
-
-#endif /* WS_PERF_H */
