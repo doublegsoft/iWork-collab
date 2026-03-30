@@ -56,9 +56,9 @@ iw_prompt_decode(const unsigned char* buf,
 **              the total size (in bytes) of the newly allocated buffer.
 */
 void 
-iw_prompt_encode(iw_prompt_p obj, 
+iw_prompt_encode(const iw_prompt_p obj, 
                  unsigned char** bytes, 
-                 unsigned int* size);
+                 size_t* size);
 
 /*!
 ** Decodes a serialized raw byte buffer into an object instance.
@@ -86,9 +86,9 @@ iw_compilation_decode(const unsigned char* buf,
 **              the total size (in bytes) of the newly allocated buffer.
 */
 void 
-iw_compilation_encode(iw_compilation_p obj, 
+iw_compilation_encode(const iw_compilation_p obj, 
                       unsigned char** bytes, 
-                      unsigned int* size);
+                      size_t* size);
 
 /*!
 ** Decodes a serialized raw byte buffer into an object instance.
@@ -116,9 +116,9 @@ iw_build_decode(const unsigned char* buf,
 **              the total size (in bytes) of the newly allocated buffer.
 */
 void 
-iw_build_encode(iw_build_p obj, 
+iw_build_encode(const iw_build_p obj, 
                 unsigned char** bytes, 
-                unsigned int* size);
+                size_t* size);
 
 /*!
 ** Decodes a serialized raw byte buffer into an object instance.
@@ -146,9 +146,9 @@ iw_generation_decode(const unsigned char* buf,
 **              the total size (in bytes) of the newly allocated buffer.
 */
 void 
-iw_generation_encode(iw_generation_p obj, 
+iw_generation_encode(const iw_generation_p obj, 
                      unsigned char** bytes, 
-                     unsigned int* size);
+                     size_t* size);
 
 /*!
 ** Decodes a serialized raw byte buffer into an object instance.
@@ -176,9 +176,9 @@ iw_preview_decode(const unsigned char* buf,
 **              the total size (in bytes) of the newly allocated buffer.
 */
 void 
-iw_preview_encode(iw_preview_p obj, 
+iw_preview_encode(const iw_preview_p obj, 
                   unsigned char** bytes, 
-                  unsigned int* size);
+                  size_t* size);
 
 #ifdef __cplusplus
 }

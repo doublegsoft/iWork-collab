@@ -104,7 +104,7 @@ struct iw_prompt_s
   char typename[64];
 
   /*!
-  ** 【类型：提示词】
+  ** 【魔术数字】
   */
   int magic;
 
@@ -296,7 +296,7 @@ void
 iw_prompt_free(iw_prompt_p);
   
 /*!
-** 设置【提示词】的【类型：提示词】属性值。
+** 设置【提示词】的【魔术数字】属性值。
 */
 void
 iw_prompt_set_magic(iw_prompt_p, int);

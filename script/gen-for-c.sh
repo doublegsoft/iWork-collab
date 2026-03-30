@@ -15,7 +15,7 @@ export PROJECT_ROOT=$OUTPUT_ROOT
 ##                                       C                                    ##
 ##                                                                            ##
 ################################################################################
-REPOS=("c-pkt@gfc-1.x")
+REPOS=("c-packet@websocket-1.x")
 
 for repo in "${REPOS[@]}"
 do
@@ -45,7 +45,7 @@ done
 
 find ./gen -type f -exec rename -f 's/iwork/iWork/g' {} +
 
-cd build/darwin && cmake ../.. && make 
+cd build/darwin && cmake ../..  && make 
 cd ../..
 
 

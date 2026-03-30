@@ -12,9 +12,24 @@
 
 static struct lws_context* context = NULL;
 
-static int callback_minimal(struct lws* wsi, enum lws_callback_reasons reason,
-                            void* user, void* in, size_t len) {
-  switch (reason) {
+/*!
+** WebSocket request processing callback
+**
+** Handles lifecycle and message events from libwebsockets.
+**
+** @param wsi    WebSocket connection instance
+** @param reason Callback reason (event type)
+** @param user   Per-session user data (unused here)
+** @param in     Input data buffer
+** @param len    Length of input data
+**
+** @return int   0 on success
+*/
+static int 
+iw_request_process(struct lws* wsi, enum lws_callback_reasons reason,
+                   void* user, void* in, size_t len) {
+  switch (reason) 
+  {
     case LWS_CALLBACK_ESTABLISHED:
       printf("[WS] Connection established\n");
       break;
@@ -44,22 +59,34 @@ static int callback_minimal(struct lws* wsi, enum lws_callback_reasons reason,
   return 0;
 }
 
-// 2. Define the protocols supported by this server
+/*!
+** Signal handler for graceful server shutdown
+**
+** This callback is triggered when a registered OS signal
+** (e.g., SIGINT / Ctrl+C) is received.
+**
+** @param handle  libuv signal handle
+** @param signum  Signal number received
+**
+** Behavior:
+** 1. Prints shutdown message
+** 2. Stops the libuv event loop
+*/
+static void 
+iw_server_single(uv_signal_t* handle, int signum) {
+  printf("\nInterrupt received. Stopping...\n");
+  uv_stop(handle->loop);
+}
+
 static struct lws_protocols protocols[] = {
   {
     "iWork-protocol", // Protocol name (used by clients connecting)
-    callback_minimal,   // Callback function
+    iw_request_process,   // Callback function
     0,                  // Per-session data size
     0,                  // Maximum frame size
   },
   { NULL, NULL, 0, 0 }  /* terminator */
 };
-
-// 3. Graceful shutdown handler
-static void signal_cb(uv_signal_t* handle, int signum) {
-  printf("\nInterrupt received. Stopping...\n");
-  uv_stop(handle->loop);
-}
 
 int main(void) 
 {
@@ -69,7 +96,7 @@ int main(void)
   // Setup graceful exit on CTRL+C
   uv_signal_t sigint;
   uv_signal_init(loop, &sigint);
-  uv_signal_start(&sigint, signal_cb, SIGINT);
+  uv_signal_start(&sigint, iw_server_single, SIGINT);
 
   memset(&info, 0, sizeof info);
   info.port = 8848;
@@ -77,10 +104,10 @@ int main(void)
   
   info.options = LWS_SERVER_OPTION_LIBUV; 
   
-  // Provide the existing libuv loop to LWS (Foreign loop)
   void* foreign_loops[1];
   foreign_loops[0] = loop;
   info.foreign_loops = foreign_loops;
+  info.iface = "0.0.0.0";
 
   context = lws_create_context(&info);
   if (!context) {

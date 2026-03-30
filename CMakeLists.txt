@@ -57,6 +57,11 @@ link_directories(
   ${LIBUV_LIBRARY_DIR}
 )
 
+set(IWORK_RUNTIME_RPATH
+  "${CMAKE_CURRENT_SOURCE_DIR}/${LIBWEBSOCKETS_LIBRARY_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/${LIBUV_LIBRARY_DIR}"
+)
+
 set(IWORK_COLLAB_SOURCES
   "gen/src/iWork-pkt.c"
   "gen/src/iWork-pkt-codec.c"
@@ -72,6 +77,10 @@ elseif (UNIX)
   set(LIBNAME                  "iWork_collab")
 endif()
 
+add_library(iWork-ws STATIC
+  "src/iWork-ws.c"
+)
+
 add_executable(iWork-collab-test)
 
 target_sources(iWork-collab-test PRIVATE
@@ -85,13 +94,51 @@ target_link_libraries(iWork-collab-test PRIVATE
   ${LIBUV_LIBRARIES}
 )
 
+set_target_properties(iWork-collab-test PROPERTIES
+  BUILD_RPATH "${IWORK_RUNTIME_RPATH}"
+)
+
+add_executable(iWork-server)
+
+target_sources(iWork-server PRIVATE
+  src/iWork-server.c
+)
+
+target_link_libraries(iWork-server PRIVATE
+  iWork-collab
+  iWork-ws
+  ${LIBWEBSOCKETS_LIBRARIES}
+  ${LIBUV_LIBRARIES}
+)
+
+set_target_properties(iWork-server PROPERTIES
+  BUILD_RPATH "${IWORK_RUNTIME_RPATH}"
+)
+
+add_executable(iWork-client)
+
+target_sources(iWork-client PRIVATE
+  src/iWork-client.c
+)
+
+target_link_libraries(iWork-client PRIVATE
+  iWork-collab
+  iWork-ws
+  ${LIBWEBSOCKETS_LIBRARIES}
+  ${LIBUV_LIBRARIES}
+)
+
+set_target_properties(iWork-client PROPERTIES
+  BUILD_RPATH "${IWORK_RUNTIME_RPATH}"
+)
+
 add_executable(perf)
 
 target_sources(perf PRIVATE
   test/perf.c
 )
 
-target_link_libraries(iWork-collab-test PRIVATE
+target_link_libraries(perf PRIVATE
   iWork-collab
   ${LIBWEBSOCKETS_LIBRARIES}
 )
@@ -102,7 +149,19 @@ target_sources(hello PRIVATE
   test/hello.c
 )
 
-target_link_libraries(iWork-collab-test PRIVATE
+target_link_libraries(hello PRIVATE
   iWork-collab
   ${LIBWEBSOCKETS_LIBRARIES}
+)
+
+add_executable(iWork-pkt-codec-test)
+
+target_compile_options(iWork-pkt-codec-test PRIVATE -g)
+
+target_sources(iWork-pkt-codec-test PRIVATE
+  gen/test/iWork-pkt-codec-test.c
+)
+
+target_link_libraries(iWork-pkt-codec-test PRIVATE
+  iWork-collab
 )

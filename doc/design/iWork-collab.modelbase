@@ -3,7 +3,7 @@
 @name(label='提示词')
 prompt<
 
-  @name(label='类型：提示词')
+  @name(label='魔术数字')
   @code(hex='0x6977726B')
   magic = 1769947755: integer,
 
@@ -52,7 +52,7 @@ compilation<
   src_len: integer,
 
   @name(label='代码')
-  source: string
+  source: string(src_len)
 
 >
 
