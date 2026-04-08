@@ -154,14 +154,56 @@ target_link_libraries(hello PRIVATE
   ${LIBWEBSOCKETS_LIBRARIES}
 )
 
+################################################################################
+##                                                                            ##
+##                           iWork-pkt-codec-test (gen)                       ##
+##                                                                            ##
+################################################################################
+
 add_executable(iWork-pkt-codec-test)
 
 target_compile_options(iWork-pkt-codec-test PRIVATE -g)
 
 target_sources(iWork-pkt-codec-test PRIVATE
-  gen/test/iWork-pkt-codec-test.c
+  "gen/src/iWork-pkt-codec.c"
+  "gen/src/iWork-pkt.c"
+  "gen/test/iWork-pkt-codec-test.c"
 )
 
 target_link_libraries(iWork-pkt-codec-test PRIVATE
+  
+)
+
+add_executable(iWork-server-ping-test)
+
+target_sources(iWork-server-ping-test PRIVATE
+  test/iWork-server-ping-test.c
+)
+
+target_link_libraries(iWork-server-ping-test PRIVATE
   iWork-collab
+  iWork-ws
+  ${LIBWEBSOCKETS_LIBRARIES}
+  ${LIBUV_LIBRARIES}
+)
+
+set_target_properties(iWork-server-ping-test PROPERTIES
+  BUILD_RPATH "${IWORK_RUNTIME_RPATH}"
+)
+
+add_executable(iWork-server-prompt-test)
+
+target_sources(iWork-server-prompt-test PRIVATE
+  test/iWork-server-prompt-test.c
+)
+
+target_link_libraries(iWork-server-prompt-test PRIVATE
+  iWork-collab
+  iWork-ws
+  ${LIBWEBSOCKETS_LIBRARIES}
+  ${LIBUV_LIBRARIES}
+)
+
+set_target_properties(iWork-server-prompt-test PROPERTIES
+  BUILD_RPATH "${IWORK_RUNTIME_RPATH}"
 )

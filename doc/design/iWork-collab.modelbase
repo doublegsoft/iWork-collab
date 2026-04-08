@@ -4,8 +4,8 @@
 prompt<
 
   @name(label='魔术数字')
-  @code(hex='0x6977726B')
-  magic = 1769947755: integer,
+  @code(hex='0x11223344')
+  magic = 287454020: integer,
 
   @name(label='版本')
   version = '01': string(2),

@@ -30,8 +30,7 @@ iw_prompt_p
 iw_prompt_init(void)
 {
   iw_prompt_p ret = (iw_prompt_p) malloc(sizeof(iw_prompt_t));
-  strcpy(ret->typename, "iw_prompt_p");
-  ret->magic = INT_MIN;
+  ret->magic = 287454020;
   ret->version[0] = '\0';
   ret->request = INT_MIN;
   ret->type[0] = '\0';
@@ -123,7 +122,6 @@ iw_compilation_p
 iw_compilation_init(void)
 {
   iw_compilation_p ret = (iw_compilation_p) malloc(sizeof(iw_compilation_t));
-  strcpy(ret->typename, "iw_compilation_p");
   ret->len = INT_MIN;
   ret->type[0] = '\0';
   ret->language[0] = '\0';
@@ -175,7 +173,6 @@ iw_build_p
 iw_build_init(void)
 {
   iw_build_p ret = (iw_build_p) malloc(sizeof(iw_build_t));
-  strcpy(ret->typename, "iw_build_p");
   ret->length = INT_MIN;
   ret->type[0] = '\0';
   ret->build_tool[0] = '\0';
@@ -217,7 +214,6 @@ iw_generation_p
 iw_generation_init(void)
 {
   iw_generation_p ret = (iw_generation_p) malloc(sizeof(iw_generation_t));
-  strcpy(ret->typename, "iw_generation_p");
   ret->length = INT_MIN;
   ret->type[0] = '\0';
   ret->file_type[0] = '\0';
@@ -259,7 +255,6 @@ iw_preview_p
 iw_preview_init(void)
 {
   iw_preview_p ret = (iw_preview_p) malloc(sizeof(iw_preview_t));
-  strcpy(ret->typename, "iw_preview_p");
   ret->length = INT_MIN;
   ret->type[0] = '\0';
   ret->file_type[0] = '\0';

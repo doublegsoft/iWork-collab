@@ -7,10 +7,128 @@
 */
 #include <libwebsockets.h>
 #include <uv.h>
+#include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <errno.h>
+#include <time.h>
+#include <sys/stat.h>
+
+#include "iWork-pkt-codec.h"
+#include "iWork-ws.h"
 
 static struct lws_context* context = NULL;
+static int g_server_busy = 0;
+
+static void
+iw_dump_binary_packet_to_file(const unsigned char* data, size_t len)
+{
+  static unsigned long seq = 0;
+  const char* dir = "recv";
+  char path[256];
+  FILE* f = NULL;
+  time_t now = time(NULL);
+  struct tm tm_now;
+
+  if (data == NULL || len == 0) {
+    return;
+  }
+
+  if (mkdir(dir, 0755) != 0 && errno != EEXIST) {
+    fprintf(stderr, "[WS] mkdir(%s) failed: %s\n", dir, strerror(errno));
+    return;
+  }
+
+  if (localtime_r(&now, &tm_now) == NULL) {
+    memset(&tm_now, 0, sizeof(tm_now));
+  }
+
+  snprintf(path,
+           sizeof(path),
+           "%s/iw-pkt-%04d%02d%02d-%02d%02d%02d-%06lu.bin",
+           dir,
+           tm_now.tm_year + 1900,
+           tm_now.tm_mon + 1,
+           tm_now.tm_mday,
+           tm_now.tm_hour,
+           tm_now.tm_min,
+           tm_now.tm_sec,
+           ++seq);
+
+  f = fopen(path, "wb");
+  if (f == NULL) {
+    fprintf(stderr, "[WS] fopen(%s) failed: %s\n", path, strerror(errno));
+    return;
+  }
+
+  if (fwrite(data, 1, len, f) != len) {
+    fprintf(stderr, "[WS] fwrite(%s) short write: %s\n", path, strerror(errno));
+  } else {
+    printf("[WS] dumped binary packet to %s (%zu bytes)\n", path, len);
+  }
+  fclose(f);
+}
+
+static void
+iw_send_busy(struct lws* wsi, const void* in, size_t len)
+{
+  iw_prompt_p req = NULL;
+  iw_prompt_p resp = NULL;
+  unsigned char* encoded = NULL;
+  size_t encoded_size = 0;
+  const char* busy_text = "BUSY";
+
+  if (wsi == NULL) {
+    return;
+  }
+
+  if (in != NULL && len > 0) {
+    req = iw_prompt_decode((const unsigned char*)in, len);
+  }
+
+  if (req != NULL) {
+    resp = iw_prompt_init();
+    if (resp != NULL) {
+      resp->magic = req->magic;
+      memcpy(resp->version, req->version, sizeof(resp->version));
+      resp->request = req->request;
+      memcpy(resp->type, req->type, sizeof(resp->type));
+      resp->file_count = 0;
+      resp->text_length = (int)strlen(busy_text);
+      resp->length = resp->text_length;
+      resp->text = (char*)malloc((size_t)resp->text_length);
+      if (resp->text != NULL) {
+        memcpy(resp->text, busy_text, (size_t)resp->text_length);
+        iw_prompt_encode(resp, &encoded, &encoded_size);
+      }
+    }
+  }
+
+  if (encoded != NULL && encoded_size > 0) {
+    unsigned char* out = (unsigned char*)malloc(LWS_PRE + encoded_size);
+    if (out != NULL) {
+      memcpy(out + LWS_PRE, encoded, encoded_size);
+      lws_write(wsi, out + LWS_PRE, encoded_size, LWS_WRITE_BINARY);
+      free(out);
+    }
+  } else {
+    unsigned char buf[LWS_PRE + 16];
+    unsigned char* p = &buf[LWS_PRE];
+    size_t n = strlen(busy_text);
+    memcpy(p, busy_text, n);
+    lws_write(wsi, p, n, LWS_WRITE_TEXT);
+  }
+
+  if (encoded != NULL) {
+    free(encoded);
+  }
+  if (resp != NULL) {
+    iw_prompt_free(resp);
+  }
+  if (req != NULL) {
+    iw_prompt_free(req);
+  }
+}
 
 /*!
 ** WebSocket request processing callback
@@ -35,17 +153,101 @@ iw_request_process(struct lws* wsi, enum lws_callback_reasons reason,
       break;
 
     case LWS_CALLBACK_RECEIVE: {
-      printf("[WS] Received data: %.*s\n", (int)len, (char*)in);
-      
-      // Libwebsockets requires data to be padded with LWS_PRE bytes at the front
-      unsigned char buf[LWS_PRE + 128];
-      unsigned char* p = &buf[LWS_PRE];
-      
-      // Format a simple reply
-      int n = snprintf((char*)p, 128, "Server received: %.*s", (int)len, (char*)in);
-      
-      // Write data back to the client
-      lws_write(wsi, p, n, LWS_WRITE_TEXT);
+      unsigned char* encoded_reply = NULL;
+      size_t encoded_reply_size = 0;
+      printf("[WS] received request: %d %d\n", (int)len);
+      iw_prompt_p request = iw_prompt_decode((const unsigned char*)in, len);
+      iw_prompt_p response = NULL;
+      char response_text[256];
+      int response_text_len = 0;
+
+      if (lws_frame_is_binary(wsi)) {
+        iw_dump_binary_packet_to_file((const unsigned char*)in, len);
+      }
+
+      if (g_server_busy) {
+        fprintf(stderr, "[WS] busy: reject new request\n");
+        iw_send_busy(wsi, in, len);
+        break;
+      }
+      g_server_busy = 1;
+
+      if (request == NULL) {
+        fprintf(stderr, "[WS] Invalid prompt packet\n");
+        g_server_busy = 0;
+        break;
+      }
+
+      printf("[WS] prompt request=%ld text=%.*s\n",
+             request->request,
+             request->text_length,
+             request->text != NULL ? request->text : "");
+
+      response = iw_prompt_init();
+      if (response == NULL) {
+        iw_prompt_free(request);
+        g_server_busy = 0;
+        break;
+      }
+
+      response->magic = request->magic;
+      memcpy(response->version, request->version, sizeof(response->version));
+      response->request = request->request;
+      memcpy(response->type, request->type, sizeof(response->type));
+      response->file_count = 0;
+
+      response_text_len = snprintf(response_text,
+                                   sizeof(response_text),
+                                   "ACK:%.*s",
+                                   request->text_length,
+                                   request->text != NULL ? request->text : "");
+      if (response_text_len < 0) {
+        iw_prompt_free(request);
+        iw_prompt_free(response);
+        g_server_busy = 0;
+        break;
+      }
+      if ((size_t)response_text_len >= sizeof(response_text)) {
+        response_text_len = (int)sizeof(response_text) - 1;
+      }
+
+      response->text_length = response_text_len;
+      response->length = response_text_len;
+      response->text = (char*)malloc((size_t)response->text_length);
+      if (response->text == NULL) {
+        iw_prompt_free(request);
+        iw_prompt_free(response);
+        g_server_busy = 0;
+        break;
+      }
+      memcpy(response->text, response_text, (size_t)response->text_length);
+
+      iw_prompt_encode(response, &encoded_reply, &encoded_reply_size);
+      if (encoded_reply == NULL || encoded_reply_size == 0) {
+        iw_prompt_free(request);
+        iw_prompt_free(response);
+        g_server_busy = 0;
+        break;
+      }
+
+      {
+        unsigned char* out = (unsigned char*)malloc(LWS_PRE + encoded_reply_size);
+        if (out == NULL) {
+          free(encoded_reply);
+          iw_prompt_free(request);
+          iw_prompt_free(response);
+          g_server_busy = 0;
+          break;
+        }
+        memcpy(out + LWS_PRE, encoded_reply, encoded_reply_size);
+        lws_write(wsi, out + LWS_PRE, encoded_reply_size, LWS_WRITE_BINARY);
+        free(out);
+      }
+
+      free(encoded_reply);
+      iw_prompt_free(request);
+      iw_prompt_free(response);
+      g_server_busy = 0;
       break;
     }
 
@@ -80,7 +282,7 @@ iw_server_single(uv_signal_t* handle, int signum) {
 
 static struct lws_protocols protocols[] = {
   {
-    "iWork-protocol", // Protocol name (used by clients connecting)
+    iw_ws_protocol, // Protocol name (used by clients connecting)
     iw_request_process,   // Callback function
     0,                  // Per-session data size
     0,                  // Maximum frame size

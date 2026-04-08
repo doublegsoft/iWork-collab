@@ -98,10 +98,6 @@ typedef        iw_preview_t*     iw_preview_p;
 */
 struct iw_prompt_s 
 {
-  /*!
-  ** 指明这个对象的类型名称。
-  */
-  char typename[64];
 
   /*!
   ** 【魔术数字】
@@ -159,10 +155,6 @@ struct iw_prompt_s
 */
 struct iw_compilation_s 
 {
-  /*!
-  ** 指明这个对象的类型名称。
-  */
-  char typename[64];
 
   /*!
   ** 【指令长度】
@@ -195,10 +187,6 @@ struct iw_compilation_s
 */
 struct iw_build_s 
 {
-  /*!
-  ** 指明这个对象的类型名称。
-  */
-  char typename[64];
 
   /*!
   ** 【指令长度】
@@ -226,10 +214,6 @@ struct iw_build_s
 */
 struct iw_generation_s 
 {
-  /*!
-  ** 指明这个对象的类型名称。
-  */
-  char typename[64];
 
   /*!
   ** 【包长度】
@@ -257,10 +241,6 @@ struct iw_generation_s
 */
 struct iw_preview_s 
 {
-  /*!
-  ** 指明这个对象的类型名称。
-  */
-  char typename[64];
 
   /*!
   ** 【包长度】
