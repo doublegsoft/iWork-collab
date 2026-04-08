@@ -146,8 +146,8 @@ iw_compilation_decode(const unsigned char* bytes,
   size_t offset = 0;
   size_t block_bytes = 0;
 
-  // len
-  memcpy((void*)&ret->len, bytes + offset, 4);
+  // magic
+  memcpy((void*)&ret->magic, bytes + offset, 4);
   offset += 4;
   // type
   memcpy((void*)ret->type, bytes + offset, 2);
@@ -174,7 +174,7 @@ iw_compilation_encode(const iw_compilation_p compilation,
   size_t offset = 0;
   size_t total_bytes = 0;
   size_t block_bytes = 0;
-  // len    
+  // magic    
   total_bytes += 4; 
   // type    
   total_bytes += 2; 
@@ -186,8 +186,8 @@ iw_compilation_encode(const iw_compilation_p compilation,
   total_bytes += compilation->src_len; 
   *size = total_bytes;
   *bytes = (unsigned char*)malloc(total_bytes);
-  // len
-  memcpy((*bytes) + offset, &compilation->len, 4);
+  // magic
+  memcpy((*bytes) + offset, &compilation->magic, 4);
   offset += 4;
   // type
   memcpy((*bytes) + offset, compilation->type, 2);
@@ -211,8 +211,8 @@ iw_build_decode(const unsigned char* bytes,
   size_t offset = 0;
   size_t block_bytes = 0;
 
-  // length
-  memcpy((void*)&ret->length, bytes + offset, 4);
+  // magic
+  memcpy((void*)&ret->magic, bytes + offset, 4);
   offset += 4;
   // type
   memcpy((void*)ret->type, bytes + offset, 2);
@@ -235,7 +235,7 @@ iw_build_encode(const iw_build_p build,
   size_t offset = 0;
   size_t total_bytes = 0;
   size_t block_bytes = 0;
-  // length    
+  // magic    
   total_bytes += 4; 
   // type    
   total_bytes += 2; 
@@ -245,8 +245,8 @@ iw_build_encode(const iw_build_p build,
   total_bytes += 200; 
   *size = total_bytes;
   *bytes = (unsigned char*)malloc(total_bytes);
-  // length
-  memcpy((*bytes) + offset, &build->length, 4);
+  // magic
+  memcpy((*bytes) + offset, &build->magic, 4);
   offset += 4;
   // type
   memcpy((*bytes) + offset, build->type, 2);
@@ -267,8 +267,8 @@ iw_generation_decode(const unsigned char* bytes,
   size_t offset = 0;
   size_t block_bytes = 0;
 
-  // length
-  memcpy((void*)&ret->length, bytes + offset, 4);
+  // magic
+  memcpy((void*)&ret->magic, bytes + offset, 4);
   offset += 4;
   // type
   memcpy((void*)ret->type, bytes + offset, 2);
@@ -291,7 +291,7 @@ iw_generation_encode(const iw_generation_p generation,
   size_t offset = 0;
   size_t total_bytes = 0;
   size_t block_bytes = 0;
-  // length    
+  // magic    
   total_bytes += 4; 
   // type    
   total_bytes += 2; 
@@ -301,8 +301,8 @@ iw_generation_encode(const iw_generation_p generation,
   total_bytes += 200; 
   *size = total_bytes;
   *bytes = (unsigned char*)malloc(total_bytes);
-  // length
-  memcpy((*bytes) + offset, &generation->length, 4);
+  // magic
+  memcpy((*bytes) + offset, &generation->magic, 4);
   offset += 4;
   // type
   memcpy((*bytes) + offset, generation->type, 2);
@@ -323,8 +323,8 @@ iw_preview_decode(const unsigned char* bytes,
   size_t offset = 0;
   size_t block_bytes = 0;
 
-  // length
-  memcpy((void*)&ret->length, bytes + offset, 4);
+  // magic
+  memcpy((void*)&ret->magic, bytes + offset, 4);
   offset += 4;
   // type
   memcpy((void*)ret->type, bytes + offset, 2);
@@ -347,7 +347,7 @@ iw_preview_encode(const iw_preview_p preview,
   size_t offset = 0;
   size_t total_bytes = 0;
   size_t block_bytes = 0;
-  // length    
+  // magic    
   total_bytes += 4; 
   // type    
   total_bytes += 2; 
@@ -357,8 +357,8 @@ iw_preview_encode(const iw_preview_p preview,
   total_bytes += 200; 
   *size = total_bytes;
   *bytes = (unsigned char*)malloc(total_bytes);
-  // length
-  memcpy((*bytes) + offset, &preview->length, 4);
+  // magic
+  memcpy((*bytes) + offset, &preview->magic, 4);
   offset += 4;
   // type
   memcpy((*bytes) + offset, preview->type, 2);

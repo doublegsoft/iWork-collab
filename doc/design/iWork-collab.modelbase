@@ -39,8 +39,9 @@ prompt<
 @name(label='编译指令')
 compilation<
 
-  @name(label='指令长度')
-  len: integer,
+  @name(label='魔术数字')
+  @code(hex='0x11223344')
+  magic = 287454020: integer,
 
   @name(label='指令类型')
   type = 'CX': string(2),
@@ -60,8 +61,9 @@ compilation<
 @name(label='构建指令')
 build<
 
-  @name(label='指令长度')
-  length: integer,
+  @name(label='魔术数字')
+  @code(hex='0x11223344')
+  magic = 287454020: integer,
 
   @name(label='指令类型')
   type = 'BD': string(2),
@@ -78,8 +80,9 @@ build<
 @name(label='文件生成')
 generation<
 
-  @name(label='包长度')
-  length: integer,
+  @name(label='魔术数字')
+  @code(hex='0x11223344')
+  magic = 287454020: integer,
 
   @name(label='指令类型')
   type = 'GN': string(2),
@@ -96,8 +99,9 @@ generation<
 @name(label='预览界面')
 preview<
 
-  @name(label='包长度')
-  length: integer,
+  @name(label='魔术数字')
+  @code(hex='0x11223344')
+  magic = 287454020: integer,
 
   @name(label='指令类型')
   type = 'BD': string(2),

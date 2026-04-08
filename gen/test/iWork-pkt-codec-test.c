@@ -200,8 +200,9 @@ iw_compilation_decode_test(void)
   memset(&source_obj, 0, sizeof(iw_compilation_t));
   iw_compilation_p compilation = &source_obj;
 
-  // 初始化属性: len
-  memset(&compilation->len, 0xAA, 4);
+  // 初始化属性: magic
+  int magic_dflval = 287454020;
+  memcpy(&compilation->magic, &magic_dflval, sizeof(compilation->magic));  
   // 初始化属性: type
   memcpy(compilation->type, "CX", sizeof(compilation->type));  
   // 初始化属性: language
@@ -239,8 +240,8 @@ iw_compilation_decode_test(void)
   // ==========================================
   assert(decoded_obj != NULL);
   
-  // 验证固定长度字段: len
-  assert(memcmp(&source_obj.len, &decoded_obj->len, 4) == 0);
+  // 验证固定长度字段: magic
+  assert(memcmp(&source_obj.magic, &decoded_obj->magic, 4) == 0);
   // 验证固定长度字段: type
   assert(memcmp(source_obj.type, decoded_obj->type, 2) == 0);
   // 验证固定长度字段: language
@@ -275,9 +276,10 @@ iw_compilation_encode_test(void)
 
   size_t expected_total_size = 0;
 
-  // 初始化属性: len
-  memset(&compilation->len, 0xAA, 4);
-  expected_total_size += 4;
+  // 初始化属性: magic
+  int magic_dflval = 287454020;
+  memcpy(&compilation->magic, &magic_dflval, sizeof(compilation->magic));  
+  expected_total_size += sizeof(compilation->magic);  
   // 初始化属性: type
   memcpy(compilation->type, "CX", sizeof(compilation->type));  
   expected_total_size += sizeof(compilation->type);  
@@ -313,8 +315,9 @@ iw_build_decode_test(void)
   memset(&source_obj, 0, sizeof(iw_build_t));
   iw_build_p build = &source_obj;
 
-  // 初始化属性: length
-  memset(&build->length, 0xAA, 4);
+  // 初始化属性: magic
+  int magic_dflval = 287454020;
+  memcpy(&build->magic, &magic_dflval, sizeof(build->magic));  
   // 初始化属性: type
   memcpy(build->type, "BD", sizeof(build->type));  
   // 初始化属性: build_tool
@@ -349,8 +352,8 @@ iw_build_decode_test(void)
   // ==========================================
   assert(decoded_obj != NULL);
   
-  // 验证固定长度字段: length
-  assert(memcmp(&source_obj.length, &decoded_obj->length, 4) == 0);
+  // 验证固定长度字段: magic
+  assert(memcmp(&source_obj.magic, &decoded_obj->magic, 4) == 0);
   // 验证固定长度字段: type
   assert(memcmp(source_obj.type, decoded_obj->type, 2) == 0);
   // 验证固定长度字段: build_tool
@@ -383,9 +386,10 @@ iw_build_encode_test(void)
 
   size_t expected_total_size = 0;
 
-  // 初始化属性: length
-  memset(&build->length, 0xAA, 4);
-  expected_total_size += 4;
+  // 初始化属性: magic
+  int magic_dflval = 287454020;
+  memcpy(&build->magic, &magic_dflval, sizeof(build->magic));  
+  expected_total_size += sizeof(build->magic);  
   // 初始化属性: type
   memcpy(build->type, "BD", sizeof(build->type));  
   expected_total_size += sizeof(build->type);  
@@ -417,8 +421,9 @@ iw_generation_decode_test(void)
   memset(&source_obj, 0, sizeof(iw_generation_t));
   iw_generation_p generation = &source_obj;
 
-  // 初始化属性: length
-  memset(&generation->length, 0xAA, 4);
+  // 初始化属性: magic
+  int magic_dflval = 287454020;
+  memcpy(&generation->magic, &magic_dflval, sizeof(generation->magic));  
   // 初始化属性: type
   memcpy(generation->type, "GN", sizeof(generation->type));  
   // 初始化属性: file_type
@@ -453,8 +458,8 @@ iw_generation_decode_test(void)
   // ==========================================
   assert(decoded_obj != NULL);
   
-  // 验证固定长度字段: length
-  assert(memcmp(&source_obj.length, &decoded_obj->length, 4) == 0);
+  // 验证固定长度字段: magic
+  assert(memcmp(&source_obj.magic, &decoded_obj->magic, 4) == 0);
   // 验证固定长度字段: type
   assert(memcmp(source_obj.type, decoded_obj->type, 2) == 0);
   // 验证固定长度字段: file_type
@@ -487,9 +492,10 @@ iw_generation_encode_test(void)
 
   size_t expected_total_size = 0;
 
-  // 初始化属性: length
-  memset(&generation->length, 0xAA, 4);
-  expected_total_size += 4;
+  // 初始化属性: magic
+  int magic_dflval = 287454020;
+  memcpy(&generation->magic, &magic_dflval, sizeof(generation->magic));  
+  expected_total_size += sizeof(generation->magic);  
   // 初始化属性: type
   memcpy(generation->type, "GN", sizeof(generation->type));  
   expected_total_size += sizeof(generation->type);  
@@ -521,8 +527,9 @@ iw_preview_decode_test(void)
   memset(&source_obj, 0, sizeof(iw_preview_t));
   iw_preview_p preview = &source_obj;
 
-  // 初始化属性: length
-  memset(&preview->length, 0xAA, 4);
+  // 初始化属性: magic
+  int magic_dflval = 287454020;
+  memcpy(&preview->magic, &magic_dflval, sizeof(preview->magic));  
   // 初始化属性: type
   memcpy(preview->type, "BD", sizeof(preview->type));  
   // 初始化属性: file_type
@@ -557,8 +564,8 @@ iw_preview_decode_test(void)
   // ==========================================
   assert(decoded_obj != NULL);
   
-  // 验证固定长度字段: length
-  assert(memcmp(&source_obj.length, &decoded_obj->length, 4) == 0);
+  // 验证固定长度字段: magic
+  assert(memcmp(&source_obj.magic, &decoded_obj->magic, 4) == 0);
   // 验证固定长度字段: type
   assert(memcmp(source_obj.type, decoded_obj->type, 2) == 0);
   // 验证固定长度字段: file_type
@@ -591,9 +598,10 @@ iw_preview_encode_test(void)
 
   size_t expected_total_size = 0;
 
-  // 初始化属性: length
-  memset(&preview->length, 0xAA, 4);
-  expected_total_size += 4;
+  // 初始化属性: magic
+  int magic_dflval = 287454020;
+  memcpy(&preview->magic, &magic_dflval, sizeof(preview->magic));  
+  expected_total_size += sizeof(preview->magic);  
   // 初始化属性: type
   memcpy(preview->type, "BD", sizeof(preview->type));  
   expected_total_size += sizeof(preview->type);  

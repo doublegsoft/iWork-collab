@@ -157,9 +157,9 @@ struct iw_compilation_s
 {
 
   /*!
-  ** 【指令长度】
+  ** 【魔术数字】
   */
-  int len;
+  int magic;
 
   /*!
   ** 【指令类型】
@@ -189,9 +189,9 @@ struct iw_build_s
 {
 
   /*!
-  ** 【指令长度】
+  ** 【魔术数字】
   */
-  int length;
+  int magic;
 
   /*!
   ** 【指令类型】
@@ -216,9 +216,9 @@ struct iw_generation_s
 {
 
   /*!
-  ** 【包长度】
+  ** 【魔术数字】
   */
-  int length;
+  int magic;
 
   /*!
   ** 【指令类型】
@@ -243,9 +243,9 @@ struct iw_preview_s
 {
 
   /*!
-  ** 【包长度】
+  ** 【魔术数字】
   */
-  int length;
+  int magic;
 
   /*!
   ** 【指令类型】
@@ -360,10 +360,10 @@ void
 iw_compilation_free(iw_compilation_p);
   
 /*!
-** 设置【编译指令】的【指令长度】属性值。
+** 设置【编译指令】的【魔术数字】属性值。
 */
 void
-iw_compilation_set_len(iw_compilation_p, int);
+iw_compilation_set_magic(iw_compilation_p, int);
   
 /*!
 ** 设置【编译指令】的【指令类型】属性值。
@@ -402,10 +402,10 @@ void
 iw_build_free(iw_build_p);
   
 /*!
-** 设置【构建指令】的【指令长度】属性值。
+** 设置【构建指令】的【魔术数字】属性值。
 */
 void
-iw_build_set_length(iw_build_p, int);
+iw_build_set_magic(iw_build_p, int);
   
 /*!
 ** 设置【构建指令】的【指令类型】属性值。
@@ -438,10 +438,10 @@ void
 iw_generation_free(iw_generation_p);
   
 /*!
-** 设置【文件生成】的【包长度】属性值。
+** 设置【文件生成】的【魔术数字】属性值。
 */
 void
-iw_generation_set_length(iw_generation_p, int);
+iw_generation_set_magic(iw_generation_p, int);
   
 /*!
 ** 设置【文件生成】的【指令类型】属性值。
@@ -474,10 +474,10 @@ void
 iw_preview_free(iw_preview_p);
   
 /*!
-** 设置【预览界面】的【包长度】属性值。
+** 设置【预览界面】的【魔术数字】属性值。
 */
 void
-iw_preview_set_length(iw_preview_p, int);
+iw_preview_set_magic(iw_preview_p, int);
   
 /*!
 ** 设置【预览界面】的【指令类型】属性值。

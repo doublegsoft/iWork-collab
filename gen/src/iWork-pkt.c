@@ -122,7 +122,7 @@ iw_compilation_p
 iw_compilation_init(void)
 {
   iw_compilation_p ret = (iw_compilation_p) malloc(sizeof(iw_compilation_t));
-  ret->len = INT_MIN;
+  ret->magic = 287454020;
   ret->type[0] = '\0';
   ret->language[0] = '\0';
   ret->src_len = INT_MIN;
@@ -139,9 +139,9 @@ iw_compilation_free(iw_compilation_p compilation)
 }
 
 void
-iw_compilation_set_len(iw_compilation_p compilation, int value)
+iw_compilation_set_magic(iw_compilation_p compilation, int value)
 {
-  compilation->len = value;
+  compilation->magic = value;
 }
 
 void
@@ -173,7 +173,7 @@ iw_build_p
 iw_build_init(void)
 {
   iw_build_p ret = (iw_build_p) malloc(sizeof(iw_build_t));
-  ret->length = INT_MIN;
+  ret->magic = 287454020;
   ret->type[0] = '\0';
   ret->build_tool[0] = '\0';
   ret->project_path[0] = '\0';
@@ -187,9 +187,9 @@ iw_build_free(iw_build_p build)
 }
 
 void
-iw_build_set_length(iw_build_p build, int value)
+iw_build_set_magic(iw_build_p build, int value)
 {
-  build->length = value;
+  build->magic = value;
 }
 
 void
@@ -214,7 +214,7 @@ iw_generation_p
 iw_generation_init(void)
 {
   iw_generation_p ret = (iw_generation_p) malloc(sizeof(iw_generation_t));
-  ret->length = INT_MIN;
+  ret->magic = 287454020;
   ret->type[0] = '\0';
   ret->file_type[0] = '\0';
   ret->source[0] = '\0';
@@ -228,9 +228,9 @@ iw_generation_free(iw_generation_p generation)
 }
 
 void
-iw_generation_set_length(iw_generation_p generation, int value)
+iw_generation_set_magic(iw_generation_p generation, int value)
 {
-  generation->length = value;
+  generation->magic = value;
 }
 
 void
@@ -255,7 +255,7 @@ iw_preview_p
 iw_preview_init(void)
 {
   iw_preview_p ret = (iw_preview_p) malloc(sizeof(iw_preview_t));
-  ret->length = INT_MIN;
+  ret->magic = 287454020;
   ret->type[0] = '\0';
   ret->file_type[0] = '\0';
   ret->source[0] = '\0';
@@ -269,9 +269,9 @@ iw_preview_free(iw_preview_p preview)
 }
 
 void
-iw_preview_set_length(iw_preview_p preview, int value)
+iw_preview_set_magic(iw_preview_p preview, int value)
 {
-  preview->length = value;
+  preview->magic = value;
 }
 
 void
