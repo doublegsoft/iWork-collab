@@ -66,21 +66,18 @@ set(IWORK_RUNTIME_RPATH
 set(IWORK_COLLAB_SOURCES
   "gen/src/iw-pkt.c"
   "gen/src/iw-pkt-codec.c"
-)
-
-add_library(iw-collab STATIC ${IWORK_COLLAB_SOURCES})
-if (WIN32)
-elseif (APPLE)
-  add_library(iWork_collab_shared SHARED ${IWORK_COLLAB_SOURCES})
-  set_target_properties(iWork_collab_shared PROPERTIES OUTPUT_NAME iWork_collab)
-  set(LIBNAME                  "iWork_collab_shared")
-elseif (UNIX)
-  set(LIBNAME                  "iWork_collab")
-endif()
-
-add_library(iw-ws STATIC
   "src/iw-ws.c"
 )
+
+add_library(iw_collab STATIC ${IWORK_COLLAB_SOURCES})
+if (WIN32)
+elseif (APPLE)
+  add_library(iw_collab_shared SHARED ${IWORK_COLLAB_SOURCES})
+  set_target_properties(iw_collab_shared PROPERTIES OUTPUT_NAME iw_collab)
+  set(LIBNAME                  "iw_collab_shared")
+elseif (UNIX)
+  set(LIBNAME                  "iw_collab")
+endif()
 
 add_executable(iw-collab-test)
 
@@ -90,7 +87,7 @@ target_sources(iw-collab-test PRIVATE
 
 # 3. 链接库（最重要的一步）
 target_link_libraries(iw-collab-test PRIVATE
-  iw-collab
+  iw_collab
   ${LIBWEBSOCKETS_LIBRARIES}
   ${LIBUV_LIBRARIES}
 )
@@ -106,8 +103,7 @@ target_sources(iw-server PRIVATE
 )
 
 target_link_libraries(iw-server PRIVATE
-  iw-collab
-  iw-ws
+  iw_collab
   ${LIBWEBSOCKETS_LIBRARIES}
   ${LIBUV_LIBRARIES}
 )
@@ -123,8 +119,7 @@ target_sources(iw-client PRIVATE
 )
 
 target_link_libraries(iw-client PRIVATE
-  iw-collab
-  iw-ws
+  iw_collab
   ${LIBWEBSOCKETS_LIBRARIES}
   ${LIBUV_LIBRARIES}
 )
@@ -140,7 +135,7 @@ target_sources(perf PRIVATE
 )
 
 target_link_libraries(perf PRIVATE
-  iw-collab
+  iw_collab
   ${LIBWEBSOCKETS_LIBRARIES}
 )
 
@@ -151,7 +146,7 @@ target_sources(hello PRIVATE
 )
 
 target_link_libraries(hello PRIVATE
-  iw-collab
+  iw_collab
   ${LIBWEBSOCKETS_LIBRARIES}
 )
 
@@ -182,8 +177,7 @@ target_sources(iw-server-ping-test PRIVATE
 )
 
 target_link_libraries(iw-server-ping-test PRIVATE
-  iw-collab
-  iw-ws
+  iw_collab
   ${LIBWEBSOCKETS_LIBRARIES}
   ${LIBUV_LIBRARIES}
 )
@@ -199,8 +193,7 @@ target_sources(iw-server-prompt-test PRIVATE
 )
 
 target_link_libraries(iw-server-prompt-test PRIVATE
-  iw-collab
-  iw-ws
+  iw_collab
   ${LIBWEBSOCKETS_LIBRARIES}
   ${LIBUV_LIBRARIES}
 )

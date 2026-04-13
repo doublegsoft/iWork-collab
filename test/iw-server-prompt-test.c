@@ -7,12 +7,12 @@
 */
 
 /*!
-** iWork-server-prompt-test
+** iw-server-prompt-test
 **
-** 测试 iWork-server 的 prompt 功能。
+** 测试 iw-server 的 prompt 功能。
 **
 ** 1. 本地 round-trip 测试
-** 2. 连接到 iWork-server 并发送 prompt
+** 2. 连接到 iw-server 并发送 prompt
 */
 #include <libwebsockets.h>
 
