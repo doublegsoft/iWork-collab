@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "iWork-ws.h"
+#include "iw-ws.h"
 
 static struct lws_context* g_context = NULL;
 static int g_done = 0;

@@ -7,7 +7,7 @@
 ##########################################
 cmake_minimum_required(VERSION 3.16)
 
-project(iWork-collab LANGUAGES C CXX)
+project(iw-collab LANGUAGES C CXX)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
@@ -19,6 +19,7 @@ if (WIN32)
 elseif (APPLE)
   set(PLATFORM                              "darwin")
 elseif (UNIX)
+  add_definitions(-D_POSIX_C_SOURCE=200809L)
   set(PLATFORM                              "linux")
 endif()
 
@@ -63,11 +64,11 @@ set(IWORK_RUNTIME_RPATH
 )
 
 set(IWORK_COLLAB_SOURCES
-  "gen/src/iWork-pkt.c"
-  "gen/src/iWork-pkt-codec.c"
+  "gen/src/iw-pkt.c"
+  "gen/src/iw-pkt-codec.c"
 )
 
-add_library(iWork-collab STATIC ${IWORK_COLLAB_SOURCES})
+add_library(iw-collab STATIC ${IWORK_COLLAB_SOURCES})
 if (WIN32)
 elseif (APPLE)
   add_library(iWork_collab_shared SHARED ${IWORK_COLLAB_SOURCES})
@@ -77,58 +78,58 @@ elseif (UNIX)
   set(LIBNAME                  "iWork_collab")
 endif()
 
-add_library(iWork-ws STATIC
-  "src/iWork-ws.c"
+add_library(iw-ws STATIC
+  "src/iw-ws.c"
 )
 
-add_executable(iWork-collab-test)
+add_executable(iw-collab-test)
 
-target_sources(iWork-collab-test PRIVATE
+target_sources(iw-collab-test PRIVATE
   src/main.c
 )
 
 # 3. 链接库（最重要的一步）
-target_link_libraries(iWork-collab-test PRIVATE
-  iWork-collab
+target_link_libraries(iw-collab-test PRIVATE
+  iw-collab
   ${LIBWEBSOCKETS_LIBRARIES}
   ${LIBUV_LIBRARIES}
 )
 
-set_target_properties(iWork-collab-test PROPERTIES
+set_target_properties(iw-collab-test PROPERTIES
   BUILD_RPATH "${IWORK_RUNTIME_RPATH}"
 )
 
-add_executable(iWork-server)
+add_executable(iw-server)
 
-target_sources(iWork-server PRIVATE
-  src/iWork-server.c
+target_sources(iw-server PRIVATE
+  src/iw-server.c
 )
 
-target_link_libraries(iWork-server PRIVATE
-  iWork-collab
-  iWork-ws
+target_link_libraries(iw-server PRIVATE
+  iw-collab
+  iw-ws
   ${LIBWEBSOCKETS_LIBRARIES}
   ${LIBUV_LIBRARIES}
 )
 
-set_target_properties(iWork-server PROPERTIES
+set_target_properties(iw-server PROPERTIES
   BUILD_RPATH "${IWORK_RUNTIME_RPATH}"
 )
 
-add_executable(iWork-client)
+add_executable(iw-client)
 
-target_sources(iWork-client PRIVATE
-  src/iWork-client.c
+target_sources(iw-client PRIVATE
+  src/iw-client.c
 )
 
-target_link_libraries(iWork-client PRIVATE
-  iWork-collab
-  iWork-ws
+target_link_libraries(iw-client PRIVATE
+  iw-collab
+  iw-ws
   ${LIBWEBSOCKETS_LIBRARIES}
   ${LIBUV_LIBRARIES}
 )
 
-set_target_properties(iWork-client PROPERTIES
+set_target_properties(iw-client PROPERTIES
   BUILD_RPATH "${IWORK_RUNTIME_RPATH}"
 )
 
@@ -139,7 +140,7 @@ target_sources(perf PRIVATE
 )
 
 target_link_libraries(perf PRIVATE
-  iWork-collab
+  iw-collab
   ${LIBWEBSOCKETS_LIBRARIES}
 )
 
@@ -150,60 +151,60 @@ target_sources(hello PRIVATE
 )
 
 target_link_libraries(hello PRIVATE
-  iWork-collab
+  iw-collab
   ${LIBWEBSOCKETS_LIBRARIES}
 )
 
 ################################################################################
 ##                                                                            ##
-##                           iWork-pkt-codec-test (gen)                       ##
+##                           iw-pkt-codec-test (gen)                       ##
 ##                                                                            ##
 ################################################################################
 
-add_executable(iWork-pkt-codec-test)
+add_executable(iw-pkt-codec-test)
 
-target_compile_options(iWork-pkt-codec-test PRIVATE -g)
+target_compile_options(iw-pkt-codec-test PRIVATE -g)
 
-target_sources(iWork-pkt-codec-test PRIVATE
-  "gen/src/iWork-pkt-codec.c"
-  "gen/src/iWork-pkt.c"
-  "gen/test/iWork-pkt-codec-test.c"
+target_sources(iw-pkt-codec-test PRIVATE
+  "gen/src/iw-pkt-codec.c"
+  "gen/src/iw-pkt.c"
+  "gen/test/iw-pkt-codec-test.c"
 )
 
-target_link_libraries(iWork-pkt-codec-test PRIVATE
+target_link_libraries(iw-pkt-codec-test PRIVATE
   
 )
 
-add_executable(iWork-server-ping-test)
+add_executable(iw-server-ping-test)
 
-target_sources(iWork-server-ping-test PRIVATE
-  test/iWork-server-ping-test.c
+target_sources(iw-server-ping-test PRIVATE
+  test/iw-server-ping-test.c
 )
 
-target_link_libraries(iWork-server-ping-test PRIVATE
-  iWork-collab
-  iWork-ws
+target_link_libraries(iw-server-ping-test PRIVATE
+  iw-collab
+  iw-ws
   ${LIBWEBSOCKETS_LIBRARIES}
   ${LIBUV_LIBRARIES}
 )
 
-set_target_properties(iWork-server-ping-test PROPERTIES
+set_target_properties(iw-server-ping-test PROPERTIES
   BUILD_RPATH "${IWORK_RUNTIME_RPATH}"
 )
 
-add_executable(iWork-server-prompt-test)
+add_executable(iw-server-prompt-test)
 
-target_sources(iWork-server-prompt-test PRIVATE
-  test/iWork-server-prompt-test.c
+target_sources(iw-server-prompt-test PRIVATE
+  test/iw-server-prompt-test.c
 )
 
-target_link_libraries(iWork-server-prompt-test PRIVATE
-  iWork-collab
-  iWork-ws
+target_link_libraries(iw-server-prompt-test PRIVATE
+  iw-collab
+  iw-ws
   ${LIBWEBSOCKETS_LIBRARIES}
   ${LIBUV_LIBRARIES}
 )
 
-set_target_properties(iWork-server-prompt-test PROPERTIES
+set_target_properties(iw-server-prompt-test PROPERTIES
   BUILD_RPATH "${IWORK_RUNTIME_RPATH}"
 )

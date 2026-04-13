@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "iWork-pkt-codec.h"
+#include "iw-pkt-codec.h"
 
 iw_prompt_p 
 iw_prompt_decode(const unsigned char* bytes, 

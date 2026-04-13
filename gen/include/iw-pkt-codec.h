@@ -20,15 +20,15 @@
 ** THE SOFTWARE.
 */
 
-#ifndef __IWORK_PKT_CODEC_H__
-#define __IWORK_PKT_CODEC_H__
+#ifndef __IW_PKT_CODEC_H__
+#define __IW_PKT_CODEC_H__
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-#include "iWork-pkt.h"
+#include "iw-pkt.h"
 
 /*!
 ** Decodes a serialized raw byte buffer into an object instance.
@@ -184,4 +184,4 @@ iw_preview_encode(const iw_preview_p obj,
 }
 #endif
 
-#endif // __IWORK_PKT_CODEC_H__
+#endif // __IW_PKT_CODEC_H__

@@ -24,7 +24,7 @@
 #include <string.h>
 #include <limits.h>
 
-#include "iWork-pkt.h"
+#include "iw-pkt.h"
 
 iw_prompt_p
 iw_prompt_init(void)

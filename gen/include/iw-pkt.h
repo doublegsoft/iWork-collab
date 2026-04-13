@@ -19,8 +19,8 @@
 ** OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 ** THE SOFTWARE.
 */
-#ifndef __IWORK_PKT_H__
-#define __IWORK_PKT_H__
+#ifndef __IW_PKT_H__
+#define __IW_PKT_H__
 
 #ifdef __cplusplus
 extern "C"
@@ -501,4 +501,4 @@ iw_preview_set_source(iw_preview_p, const char*, size_t);
 }
 #endif
 
-#endif // __IWORK_PKT_H__
+#endif // __IW_PKT_H__

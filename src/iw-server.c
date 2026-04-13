@@ -14,8 +14,8 @@
 #include <time.h>
 #include <sys/stat.h>
 
-#include "iWork-pkt-codec.h"
-#include "iWork-ws.h"
+#include "iw-pkt-codec.h"
+#include "iw-ws.h"
 
 static struct lws_context* context = NULL;
 static int g_server_busy = 0;
@@ -157,6 +157,7 @@ iw_request_process(struct lws* wsi, enum lws_callback_reasons reason,
       size_t encoded_reply_size = 0;
       printf("[WS] received request: %d %d\n", (int)len);
       iw_prompt_p request = iw_prompt_decode((const unsigned char*)in, len);
+      printf("hello, world!\n");
       iw_prompt_p response = NULL;
       char response_text[256];
       int response_text_len = 0;

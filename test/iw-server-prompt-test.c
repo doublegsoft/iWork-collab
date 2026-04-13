@@ -22,9 +22,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "iWork-pkt-codec.h"
-#include "iWork-pkt.h"
-#include "../src/iWork-ws.h"
+#include "iw-pkt-codec.h"
+#include "iw-pkt.h"
+#include "../src/iw-ws.h"
 
 /*! 使用 gen 侧 iw_prompt 指针编码为 wire（对应 iw_prompt_encode 的封装）。 */
 static int

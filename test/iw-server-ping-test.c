@@ -12,8 +12,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "iWork-pkt-codec.h"
-#include "../src/iWork-ws.h"
+#include "iw-pkt-codec.h"
+#include "../src/iw-ws.h"
 
 static struct lws_context* g_context = NULL;
 static volatile int g_done = 0;

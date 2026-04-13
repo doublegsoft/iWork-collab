@@ -1,4 +1,4 @@
-#include "iWork-ws.h"
+#include "iw-ws.h"
 
 #include <stdio.h>
 #include <string.h>

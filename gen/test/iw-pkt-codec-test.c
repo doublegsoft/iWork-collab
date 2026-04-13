@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include <assert.h>
 
-#include "iWork-pkt-codec.h"
+#include "iw-pkt-codec.h"
 
 void
 iw_prompt_decode_test(void) 
@@ -531,7 +531,7 @@ iw_preview_decode_test(void)
   int magic_dflval = 287454020;
   memcpy(&preview->magic, &magic_dflval, sizeof(preview->magic));  
   // 初始化属性: type
-  memcpy(preview->type, "BD", sizeof(preview->type));  
+  memcpy(preview->type, "PV", sizeof(preview->type));  
   // 初始化属性: file_type
   memset(&preview->file_type, 0xAA, 2);
   // 初始化属性: source
@@ -603,7 +603,7 @@ iw_preview_encode_test(void)
   memcpy(&preview->magic, &magic_dflval, sizeof(preview->magic));  
   expected_total_size += sizeof(preview->magic);  
   // 初始化属性: type
-  memcpy(preview->type, "BD", sizeof(preview->type));  
+  memcpy(preview->type, "PV", sizeof(preview->type));  
   expected_total_size += sizeof(preview->type);  
   // 初始化属性: file_type
   memset(&preview->file_type, 0xAA, 2);
