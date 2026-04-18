@@ -6,17 +6,14 @@ prompt<
   @code(hex='0x11223344')
   magic: 287454020,
 
+  @name(label='类型：提示词')
+  type = 'PT': string(2),
+
   @name(label='版本')
   version = '01': string(2),
 
   @name(label='请求标识')
   request: long,
-
-  @name(label='类型：提示词')
-  type = 'PT': string(2),
-
-  @name(label='指令长度')
-  length: integer,
 
   @name(label='文本长度')
   text_length: integer,
@@ -35,12 +32,36 @@ prompt<
 >
 
 @instruction
+@name(label='编写代码')
+coding<
+
+  @name(label='魔术数字')
+  magic: 287454020,
+
+  @name(label='类型：提示词')
+  type = 'CD': string(2),
+
+  @name(label='版本')
+  version = '01': string(2),
+
+  @name(label='请求标识')
+  request: long,
+
+  @name(label='文本长度')
+  text_length: integer,
+
+  @name(label='文本内容')
+  text: string(text_length)
+
+>
+
+@instruction
 @name(label='编译指令')
 compilation<
 
   @name(label='魔术数字')
   @code(hex='0x11223344')
-  magic = 287454020: integer,
+  magic: 287454020,
 
   @name(label='指令类型')
   type = 'CX': string(2),
@@ -75,25 +96,6 @@ build<
 
 >
 
-@instruction
-@name(label='文件生成')
-generation<
-
-  @name(label='魔术数字')
-  @code(hex='0x11223344')
-  magic = 287454020: integer,
-
-  @name(label='指令类型')
-  type = 'GN': string(2),
-
-  @name(label='编程语言')
-  file_type: enum[MD:markdown, MD: cmake, CG: cargo, YN: yarn],
-
-  @name(label='项目路径')
-  source: string(200)
-
->
-
 @instruction(note='把html转换成图片')
 @name(label='预览界面')
 preview<
@@ -113,3 +115,20 @@ preview<
 
 >
 
+@instruction
+@name(label='生成内容')
+generation<
+
+  @name(label='魔术数字')
+  @code(hex='0x11223344')
+  magic: 287454020,
+
+  @name(label='请求标识')
+  request: long,
+
+  @name(label='文本长度')
+  text_length: integer,
+
+  @name(label='文本内容')
+  text: string(text_length)
+>

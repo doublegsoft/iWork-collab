@@ -30,7 +30,7 @@ set(BUILD                                   "build/${PLATFORM}")
 ##                                libwebsockets                               ##
 ##                                                                            ##
 ################################################################################
-set(LIBWEBSOCKETS_DIR                       "3rd/libwebsockets-4.5.4")
+set(LIBWEBSOCKETS_DIR                       "${CMAKE_CURRENT_SOURCE_DIR}/../iWork-3rd/libwebsockets-4.5.4")
 set(LIBWEBSOCKETS_INCLUDE_DIR               "${LIBWEBSOCKETS_DIR}/include"
                                             "${LIBWEBSOCKETS_DIR}/${BUILD}/include")
 set(LIBWEBSOCKETS_LIBRARY_DIR               "${LIBWEBSOCKETS_DIR}/${BUILD}/lib")
@@ -41,7 +41,7 @@ set(LIBWEBSOCKETS_LIBRARIES                 websockets websockets-evlib_uv)
 ##                                    libuv                                   ##
 ##                                                                            ##
 ################################################################################
-set(LIBUV_DIR                               "3rd/libuv-1.52.1")
+set(LIBUV_DIR                               "${CMAKE_CURRENT_SOURCE_DIR}/../iWork-3rd/libuv-1.52.1")
 set(LIBUV_INCLUDE_DIR                       "${LIBUV_DIR}/include")
 set(LIBUV_LIBRARY_DIR                       "${LIBUV_DIR}/${BUILD}")
 set(LIBUV_LIBRARIES                         uv)
@@ -199,5 +199,21 @@ target_link_libraries(iw-server-prompt-test PRIVATE
 )
 
 set_target_properties(iw-server-prompt-test PROPERTIES
+  BUILD_RPATH "${IWORK_RUNTIME_RPATH}"
+)
+
+add_executable(iw-test-coding)
+
+target_sources(iw-test-coding PRIVATE
+  test/iw-test-coding.c
+)
+
+target_link_libraries(iw-test-coding PRIVATE
+  iw_collab
+  ${LIBWEBSOCKETS_LIBRARIES}
+  ${LIBUV_LIBRARIES}
+)
+
+set_target_properties(iw-test-coding PROPERTIES
   BUILD_RPATH "${IWORK_RUNTIME_RPATH}"
 )

@@ -41,18 +41,15 @@ iw_prompt_decode(const unsigned char* bytes,
     free(ret);
     return NULL;
   }
+  // type
+  memcpy((void*)ret->type, bytes + offset, 2);
+  offset += 2;
   // version
   memcpy((void*)ret->version, bytes + offset, 2);
   offset += 2;
   // request
   memcpy((void*)&ret->request, bytes + offset, 8);
   offset += 8;
-  // type
-  memcpy((void*)ret->type, bytes + offset, 2);
-  offset += 2;
-  // length
-  memcpy((void*)&ret->length, bytes + offset, 4);
-  offset += 4;
   // text_length
   memcpy((void*)&ret->text_length, bytes + offset, 4);
   offset += 4;
@@ -87,14 +84,12 @@ iw_prompt_encode(const iw_prompt_p prompt,
   size_t block_bytes = 0;
   // magic    
   total_bytes += 4; 
+  // type    
+  total_bytes += 2; 
   // version    
   total_bytes += 2; 
   // request    
   total_bytes += 8; 
-  // type    
-  total_bytes += 2; 
-  // length    
-  total_bytes += 4; 
   // text_length    
   total_bytes += 4; 
   // text    
@@ -111,18 +106,15 @@ iw_prompt_encode(const iw_prompt_p prompt,
   // magic
   memcpy((*bytes) + offset, &prompt->magic, 4);
   offset += 4;
+  // type
+  memcpy((*bytes) + offset, prompt->type, 2);
+  offset += 2;
   // version
   memcpy((*bytes) + offset, prompt->version, 2);
   offset += 2;
   // request
   memcpy((*bytes) + offset, &prompt->request, 8);
   offset += 8;
-  // type
-  memcpy((*bytes) + offset, prompt->type, 2);
-  offset += 2;
-  // length
-  memcpy((*bytes) + offset, &prompt->length, 4);
-  offset += 4;
   // text_length
   memcpy((*bytes) + offset, &prompt->text_length, 4);
   offset += 4;
@@ -143,6 +135,84 @@ iw_prompt_encode(const iw_prompt_p prompt,
   offset += block_bytes;  
 }
 
+iw_coding_p 
+iw_coding_decode(const unsigned char* bytes, 
+                 size_t buf_len)
+{
+  iw_coding_p ret = iw_coding_init();
+  size_t offset = 0;
+  size_t block_bytes = 0;
+
+  // magic
+  memcpy((void*)&ret->magic, bytes + offset, 4);
+  offset += 4;
+  if (ret->magic != 287454020) 
+  {
+    free(ret);
+    return NULL;
+  }
+  // type
+  memcpy((void*)ret->type, bytes + offset, 2);
+  offset += 2;
+  // version
+  memcpy((void*)ret->version, bytes + offset, 2);
+  offset += 2;
+  // request
+  memcpy((void*)&ret->request, bytes + offset, 8);
+  offset += 8;
+  // text_length
+  memcpy((void*)&ret->text_length, bytes + offset, 4);
+  offset += 4;
+  // text
+  ret->text = (char*)malloc(ret->text_length);  
+  memcpy((void*)ret->text, bytes + offset, ret->text_length);
+  offset += ret->text_length;
+
+  return ret;
+}
+
+void
+iw_coding_encode(const iw_coding_p coding, 
+                 unsigned char** bytes,
+                 size_t* size)
+{
+  size_t offset = 0;
+  size_t total_bytes = 0;
+  size_t block_bytes = 0;
+  // magic    
+  total_bytes += 4; 
+  // type    
+  total_bytes += 2; 
+  // version    
+  total_bytes += 2; 
+  // request    
+  total_bytes += 8; 
+  // text_length    
+  total_bytes += 4; 
+  // text    
+  total_bytes += coding->text_length; 
+  *size = total_bytes;
+  *bytes = (unsigned char*)malloc(total_bytes);
+  // magic
+  memcpy((*bytes) + offset, &coding->magic, 4);
+  offset += 4;
+  // type
+  memcpy((*bytes) + offset, coding->type, 2);
+  offset += 2;
+  // version
+  memcpy((*bytes) + offset, coding->version, 2);
+  offset += 2;
+  // request
+  memcpy((*bytes) + offset, &coding->request, 8);
+  offset += 8;
+  // text_length
+  memcpy((*bytes) + offset, &coding->text_length, 4);
+  offset += 4;
+  // text
+  memcpy((*bytes) + offset, coding->text, coding->text_length);
+  offset += coding->text_length;
+}
+
 iw_compilation_p 
 iw_compilation_decode(const unsigned char* bytes, 
                       size_t buf_len)
@@ -154,6 +224,11 @@ iw_compilation_decode(const unsigned char* bytes,
   // magic
   memcpy((void*)&ret->magic, bytes + offset, 4);
   offset += 4;
+  if (ret->magic != 287454020) 
+  {
+    free(ret);
+    return NULL;
+  }
   // type
   memcpy((void*)ret->type, bytes + offset, 2);
   offset += 2;
@@ -264,62 +339,6 @@ iw_build_encode(const iw_build_p build,
   offset += 200;
 }
 
-iw_generation_p 
-iw_generation_decode(const unsigned char* bytes, 
-                     size_t buf_len)
-{
-  iw_generation_p ret = iw_generation_init();
-  size_t offset = 0;
-  size_t block_bytes = 0;
-
-  // magic
-  memcpy((void*)&ret->magic, bytes + offset, 4);
-  offset += 4;
-  // type
-  memcpy((void*)ret->type, bytes + offset, 2);
-  offset += 2;
-  // file_type
-  memcpy((void*)ret->file_type, bytes + offset, 2);
-  offset += 2;
-  // source
-  memcpy((void*)ret->source, bytes + offset, 200);
-  offset += 200;
-
-  return ret;
-}
-
-void
-iw_generation_encode(const iw_generation_p generation, 
-                     unsigned char** bytes,
-                     size_t* size)
-{
-  size_t offset = 0;
-  size_t total_bytes = 0;
-  size_t block_bytes = 0;
-  // magic    
-  total_bytes += 4; 
-  // type    
-  total_bytes += 2; 
-  // file_type    
-  total_bytes += 2; 
-  // source    
-  total_bytes += 200; 
-  *size = total_bytes;
-  *bytes = (unsigned char*)malloc(total_bytes);
-  // magic
-  memcpy((*bytes) + offset, &generation->magic, 4);
-  offset += 4;
-  // type
-  memcpy((*bytes) + offset, generation->type, 2);
-  offset += 2;
-  // file_type
-  memcpy((*bytes) + offset, generation->file_type, 2);
-  offset += 2;
-  // source
-  memcpy((*bytes) + offset, generation->source, 200);
-  offset += 200;
-}
-
 iw_preview_p 
 iw_preview_decode(const unsigned char* bytes, 
                   size_t buf_len)
@@ -374,4 +393,66 @@ iw_preview_encode(const iw_preview_p preview,
   // source
   memcpy((*bytes) + offset, preview->source, 200);
   offset += 200;
+}
+
+iw_generation_p 
+iw_generation_decode(const unsigned char* bytes, 
+                     size_t buf_len)
+{
+  iw_generation_p ret = iw_generation_init();
+  size_t offset = 0;
+  size_t block_bytes = 0;
+
+  // magic
+  memcpy((void*)&ret->magic, bytes + offset, 4);
+  offset += 4;
+  if (ret->magic != 287454020) 
+  {
+    free(ret);
+    return NULL;
+  }
+  // request
+  memcpy((void*)&ret->request, bytes + offset, 8);
+  offset += 8;
+  // text_length
+  memcpy((void*)&ret->text_length, bytes + offset, 4);
+  offset += 4;
+  // text
+  ret->text = (char*)malloc(ret->text_length);  
+  memcpy((void*)ret->text, bytes + offset, ret->text_length);
+  offset += ret->text_length;
+
+  return ret;
+}
+
+void
+iw_generation_encode(const iw_generation_p generation, 
+                     unsigned char** bytes,
+                     size_t* size)
+{
+  size_t offset = 0;
+  size_t total_bytes = 0;
+  size_t block_bytes = 0;
+  // magic    
+  total_bytes += 4; 
+  // request    
+  total_bytes += 8; 
+  // text_length    
+  total_bytes += 4; 
+  // text    
+  total_bytes += generation->text_length; 
+  *size = total_bytes;
+  *bytes = (unsigned char*)malloc(total_bytes);
+  // magic
+  memcpy((*bytes) + offset, &generation->magic, 4);
+  offset += 4;
+  // request
+  memcpy((*bytes) + offset, &generation->request, 8);
+  offset += 8;
+  // text_length
+  memcpy((*bytes) + offset, &generation->text_length, 4);
+  offset += 4;
+  // text
+  memcpy((*bytes) + offset, generation->text, generation->text_length);
+  offset += generation->text_length;
 }

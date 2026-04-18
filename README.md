@@ -35,16 +35,6 @@ filepath: <文件路径>
 <完整文件代码>
 ```
 
-**或者告诉我完整文件路径中的某个方法**
-
-应答格式：
-
-```
-filepath: 文件名
-
-<方法体中的完整代码>
-```
-
 
 ## libwebsockets
 
@@ -57,9 +47,9 @@ cmake ../.. -DLWS_WITH_LIBUV=ON -DLWS_WITH_TLS=OFF -DLWS_WITH_SSL=OFF   \
 -DLIBUV_LIBRARIES=/export/local/works/doublegsoft.ai/iWork/03.Development/iWork-collab/3rd/libuv-1.52.1/build/linux/libuv.so
 ```
 
-### 启动
+## 启动应用
 
 ```
 
-export LD_LIBRARY_PATH=/Users/christian/export/local/works/doublegsoft.ai/iWork/03.Development/iWork-collab/3rd/libuv-1.52.1/build/darwin:/Users/christian/export/local/works/doublegsoft.ai/iWork/03.Development/iWork-collab/3rd/libwebsockets-4.5.4/build/darwin/lib
+export LD_LIBRARY_PATH=/Users/christian/export/local/works/doublegsoft.ai/iWork/03.Development/iWork-collab/3rd/libuv-1.52.1/build/darwin:/Users/christian/export/local/works/doublegsoft.ai/iWork/03.Development/iWork-3rd/libwebsockets-4.5.4/build/darwin/lib
 ```

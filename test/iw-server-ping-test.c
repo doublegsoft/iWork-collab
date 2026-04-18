@@ -84,7 +84,7 @@ iw_ws_callback_test_client(struct lws* wsi,
       {
         const char* text = "ping";
         req->text_length = (int)strlen(text);
-        req->length = req->text_length;
+        // req->length = req->text_length;
         req->text = (char*)malloc((size_t)req->text_length);
         if (req->text == NULL) {
           iw_prompt_free(req);

@@ -31,10 +31,9 @@ iw_prompt_init(void)
 {
   iw_prompt_p ret = (iw_prompt_p) malloc(sizeof(iw_prompt_t));
   ret->magic = INT_MIN;
+  ret->type[0] = '\0';
   ret->version[0] = '\0';
   ret->request = INT_MIN;
-  ret->type[0] = '\0';
-  ret->length = INT_MIN;
   ret->text_length = INT_MIN;
   ret->text = NULL;
   ret->file_count = INT_MIN;
@@ -62,6 +61,12 @@ iw_prompt_set_magic(iw_prompt_p prompt, int value)
 }
 
 void
+iw_prompt_set_type(iw_prompt_p prompt, const char* value, size_t len)
+{
+  memcpy(prompt->type, value, len);
+}    
+    
+void
 iw_prompt_set_version(iw_prompt_p prompt, const char* value, size_t len)
 {
   memcpy(prompt->version, value, len);
@@ -71,18 +76,6 @@ void
 iw_prompt_set_request(iw_prompt_p prompt, long value)
 {
   prompt->request = value;
-}
-
-void
-iw_prompt_set_type(iw_prompt_p prompt, const char* value, size_t len)
-{
-  memcpy(prompt->type, value, len);
-}    
-    
-void
-iw_prompt_set_length(iw_prompt_p prompt, int value)
-{
-  prompt->length = value;
 }
 
 void
@@ -118,11 +111,69 @@ iw_prompt_set_files(iw_prompt_p prompt, const char* value, size_t len)
   memcpy(prompt->files, value, len);
 }     
 
+iw_coding_p
+iw_coding_init(void)
+{
+  iw_coding_p ret = (iw_coding_p) malloc(sizeof(iw_coding_t));
+  ret->magic = INT_MIN;
+  ret->type[0] = '\0';
+  ret->version[0] = '\0';
+  ret->request = INT_MIN;
+  ret->text_length = INT_MIN;
+  ret->text = NULL;
+  return ret;
+}
+
+void
+iw_coding_free(iw_coding_p coding)
+{
+  if (coding->text != NULL) 
+    free(coding->text);
+  free(coding);
+}
+
+void
+iw_coding_set_magic(iw_coding_p coding, int value)
+{
+  coding->magic = value;
+}
+
+void
+iw_coding_set_type(iw_coding_p coding, const char* value, size_t len)
+{
+  memcpy(coding->type, value, len);
+}    
+    
+void
+iw_coding_set_version(iw_coding_p coding, const char* value, size_t len)
+{
+  memcpy(coding->version, value, len);
+}    
+    
+void
+iw_coding_set_request(iw_coding_p coding, long value)
+{
+  coding->request = value;
+}
+
+void
+iw_coding_set_text_length(iw_coding_p coding, int value)
+{
+  coding->text_length = value;
+}
+
+void
+iw_coding_set_text(iw_coding_p coding, const char* value, size_t len)
+{
+  coding->text = (char*)malloc(sizeof(char) * (len));
+  memcpy(coding->text, value, len);
+}     
+
 iw_compilation_p
 iw_compilation_init(void)
 {
   iw_compilation_p ret = (iw_compilation_p) malloc(sizeof(iw_compilation_t));
-  ret->magic = 287454020;
+  ret->magic = INT_MIN;
   ret->type[0] = '\0';
   ret->language[0] = '\0';
   ret->src_len = INT_MIN;
@@ -210,47 +261,6 @@ iw_build_set_project_path(iw_build_p build, const char* value, size_t len)
   memcpy(build->project_path, value, len);
 }    
     
-iw_generation_p
-iw_generation_init(void)
-{
-  iw_generation_p ret = (iw_generation_p) malloc(sizeof(iw_generation_t));
-  ret->magic = 287454020;
-  ret->type[0] = '\0';
-  ret->file_type[0] = '\0';
-  ret->source[0] = '\0';
-  return ret;
-}
-
-void
-iw_generation_free(iw_generation_p generation)
-{
-  free(generation);
-}
-
-void
-iw_generation_set_magic(iw_generation_p generation, int value)
-{
-  generation->magic = value;
-}
-
-void
-iw_generation_set_type(iw_generation_p generation, const char* value, size_t len)
-{
-  memcpy(generation->type, value, len);
-}    
-    
-void
-iw_generation_set_file_type(iw_generation_p generation, const char* value, size_t len)
-{
-  memcpy(generation->file_type, value, len);
-}    
-    
-void
-iw_generation_set_source(iw_generation_p generation, const char* value, size_t len)
-{
-  memcpy(generation->source, value, len);
-}    
-    
 iw_preview_p
 iw_preview_init(void)
 {
@@ -292,3 +302,46 @@ iw_preview_set_source(iw_preview_p preview, const char* value, size_t len)
   memcpy(preview->source, value, len);
 }    
     
+iw_generation_p
+iw_generation_init(void)
+{
+  iw_generation_p ret = (iw_generation_p) malloc(sizeof(iw_generation_t));
+  ret->magic = INT_MIN;
+  ret->request = INT_MIN;
+  ret->text_length = INT_MIN;
+  ret->text = NULL;
+  return ret;
+}
+
+void
+iw_generation_free(iw_generation_p generation)
+{
+  if (generation->text != NULL) 
+    free(generation->text);
+  free(generation);
+}
+
+void
+iw_generation_set_magic(iw_generation_p generation, int value)
+{
+  generation->magic = value;
+}
+
+void
+iw_generation_set_request(iw_generation_p generation, long value)
+{
+  generation->request = value;
+}
+
+void
+iw_generation_set_text_length(iw_generation_p generation, int value)
+{
+  generation->text_length = value;
+}
+
+void
+iw_generation_set_text(iw_generation_p generation, const char* value, size_t len)
+{
+  generation->text = (char*)malloc(sizeof(char) * (len));
+  memcpy(generation->text, value, len);
+}     

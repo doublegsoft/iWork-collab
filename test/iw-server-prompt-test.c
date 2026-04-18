@@ -210,7 +210,7 @@ iw_test_prompt_new(const char* text)
   iw_prompt_set_type(prompt, "PT", 2);
   iw_prompt_set_file_count(prompt, 0);
   iw_prompt_set_text_length(prompt, text_len);
-  iw_prompt_set_length(prompt, text_len);
+  // iw_prompt_set_length(prompt, text_len);
   if (text_len > 0) {
     iw_prompt_set_text(prompt, payload, (size_t)text_len);
   }
