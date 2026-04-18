@@ -30,7 +30,7 @@ iw_prompt_p
 iw_prompt_init(void)
 {
   iw_prompt_p ret = (iw_prompt_p) malloc(sizeof(iw_prompt_t));
-  ret->magic = 287454020;
+  ret->magic = INT_MIN;
   ret->version[0] = '\0';
   ret->request = INT_MIN;
   ret->type[0] = '\0';

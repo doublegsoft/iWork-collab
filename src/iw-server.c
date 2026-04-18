@@ -159,7 +159,11 @@ iw_request_process(struct lws* wsi, enum lws_callback_reasons reason,
       iw_prompt_p request = iw_prompt_decode((const unsigned char*)in, len);
       if (request == NULL) {
         fprintf(stderr, "[WS] Invalid prompt packet\n");
-        break;
+        lws_close_reason(wsi,
+                         LWS_CLOSE_STATUS_INVALID_PAYLOAD,
+                         (const unsigned char*)"invalid prompt packet",
+                         (size_t)strlen("invalid prompt packet"));
+        return -1;
       }
       printf("hello, world!\n");
       iw_prompt_p response = NULL;
@@ -259,6 +263,10 @@ iw_request_process(struct lws* wsi, enum lws_callback_reasons reason,
     case LWS_CALLBACK_CLOSED:
       printf("[WS] Connection closed\n");
       break;
+
+    case LWS_CALLBACK_WS_PEER_INITIATED_CLOSE:
+      printf("[WS] Peer initiated close\n");
+      return -1;
 
     default:
       break;

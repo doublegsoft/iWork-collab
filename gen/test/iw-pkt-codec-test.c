@@ -36,8 +36,7 @@ iw_prompt_decode_test(void)
   iw_prompt_p prompt = &source_obj;
 
   // 初始化属性: magic
-  int magic_dflval = 287454020;
-  memcpy(&prompt->magic, &magic_dflval, sizeof(prompt->magic));  
+  memset(&prompt->magic, 0xAA, 4);
   // 初始化属性: version
   memcpy(prompt->version, "01", sizeof(prompt->version));  
   // 初始化属性: request
@@ -137,9 +136,8 @@ iw_prompt_encode_test(void)
   size_t expected_total_size = 0;
 
   // 初始化属性: magic
-  int magic_dflval = 287454020;
-  memcpy(&prompt->magic, &magic_dflval, sizeof(prompt->magic));  
-  expected_total_size += sizeof(prompt->magic);  
+  memset(&prompt->magic, 0xAA, 4);
+  expected_total_size += 4;
   // 初始化属性: version
   memcpy(prompt->version, "01", sizeof(prompt->version));  
   expected_total_size += sizeof(prompt->version);  

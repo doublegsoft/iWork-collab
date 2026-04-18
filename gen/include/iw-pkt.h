@@ -102,51 +102,61 @@ struct iw_prompt_s
   /*!
   ** 【魔术数字】
   */
+  // int
   int magic;
 
   /*!
   ** 【版本】
   */
+  // string
   char version[2];
 
   /*!
   ** 【请求】
   */
+  // long
   long request;
 
   /*!
   ** 【类型：提示词】
   */
+  // string
   char type[2];
 
   /*!
   ** 【指令长度】
   */
+  // int
   int length;
 
   /*!
   ** 【文本长度】
   */
+  // int
   int text_length;
 
   /*!
   ** 【文本内容】
   */
+  // string
   char* text;
 
   /*!
   ** 【文件个数】
   */
+  // int
   int file_count;
 
   /*!
   ** 【各个文件长度】
   */
+  // 
   int* file_lens;
 
   /*!
   ** 【文件内容】
   */
+  // 
   char* files;
 }; 
 
@@ -159,26 +169,31 @@ struct iw_compilation_s
   /*!
   ** 【魔术数字】
   */
+  // int
   int magic;
 
   /*!
   ** 【指令类型】
   */
+  // string
   char type[2];
 
   /*!
   ** 【编程语言】
   */
+  // string
   char language[2];
 
   /*!
   ** 【代码长度】
   */
+  // int
   int src_len;
 
   /*!
   ** 【代码】
   */
+  // string
   char* source;
 }; 
 
@@ -191,21 +206,25 @@ struct iw_build_s
   /*!
   ** 【魔术数字】
   */
+  // int
   int magic;
 
   /*!
   ** 【指令类型】
   */
+  // string
   char type[2];
 
   /*!
   ** 【编程语言】
   */
+  // string
   char build_tool[2];
 
   /*!
   ** 【项目路径】
   */
+  // string
   char project_path[200];
 }; 
 
@@ -218,21 +237,25 @@ struct iw_generation_s
   /*!
   ** 【魔术数字】
   */
+  // int
   int magic;
 
   /*!
   ** 【指令类型】
   */
+  // string
   char type[2];
 
   /*!
   ** 【编程语言】
   */
+  // string
   char file_type[2];
 
   /*!
   ** 【项目路径】
   */
+  // string
   char source[200];
 }; 
 
@@ -245,21 +268,25 @@ struct iw_preview_s
   /*!
   ** 【魔术数字】
   */
+  // int
   int magic;
 
   /*!
   ** 【指令类型】
   */
+  // string
   char type[2];
 
   /*!
   ** 【编程语言】
   */
+  // string
   char file_type[2];
 
   /*!
   ** 【项目路径】
   */
+  // string
   char source[200];
 }; 
 

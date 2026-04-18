@@ -36,6 +36,11 @@ iw_prompt_decode(const unsigned char* bytes,
   // magic
   memcpy((void*)&ret->magic, bytes + offset, 4);
   offset += 4;
+  if (ret->magic != 287454020) 
+  {
+    free(ret);
+    return NULL;
+  }
   // version
   memcpy((void*)ret->version, bytes + offset, 2);
   offset += 2;
