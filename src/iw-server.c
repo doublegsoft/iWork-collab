@@ -42,11 +42,11 @@ static int g_server_busy = 0;
 ** @return exit code (>=0), or -1 on error
 */
 static int 
-iw_exec_shell_capture(const char *cmd,
-                      char* const argv[],
-                      char* output,
-                      size_t out_size,
-                      const char* outfile)
+iw_capture_shell(const char *cmd,
+                 char* const argv[],
+                 char* output,
+                 size_t out_size,
+                 const char* outfile)
 {
   int pipefd[2];
   pid_t pid;
@@ -143,7 +143,7 @@ iw_exec_shell_capture(const char *cmd,
 ** @param len  The length (in bytes) of the data buffer.
 */
 static void
-iw_dump_binary_packet_to_file(const unsigned char* data, size_t len)
+iw_dump_packet(const unsigned char* data, size_t len)
 {
   static unsigned long seq = 0;
   const char* dir = "recv";
@@ -192,64 +192,85 @@ iw_dump_binary_packet_to_file(const unsigned char* data, size_t len)
 }
 
 static void
-iw_send_busy(struct lws* wsi, const void* in, size_t len)
+iw_respond_busy(struct lws* wsi)
 {
-  iw_prompt_p req = NULL;
-  iw_prompt_p resp = NULL;
-  unsigned char* encoded = NULL;
-  size_t encoded_size = 0;
-  const char* busy_text = "BUSY";
+  unsigned char* encoded_reply = NULL;
+  size_t encoded_reply_size = 0;
+  iw_generation_p generation = iw_generation_init();
+  iw_generation_set_status(generation, "BS", 2);
+  iw_generation_set_magic(generation, 287454020);
+  iw_generation_set_request(generation, 0L);
+  iw_generation_set_text_length(generation, 0);
+  iw_generation_set_text(generation, "", 0);
+  
+  iw_generation_encode(generation, &encoded_reply, &encoded_reply_size);
 
-  if (wsi == NULL) {
-    return;
-  }
+  unsigned char* buf = (unsigned char*)malloc(LWS_PRE + encoded_reply_size);
+  memcpy(buf + LWS_PRE, encoded_reply, encoded_reply_size);
+  lws_write(wsi, buf + LWS_PRE, encoded_reply_size, LWS_WRITE_BINARY);
+  free(encoded_reply);
+  free(buf);
+}
 
-  if (in != NULL && len > 0) {
-    req = iw_prompt_decode((const unsigned char*)in, len);
-  }
-
-  if (req != NULL) {
-    resp = iw_prompt_init();
-    if (resp != NULL) {
-      resp->magic = req->magic;
-      memcpy(resp->version, req->version, sizeof(resp->version));
-      resp->request = req->request;
-      memcpy(resp->type, req->type, sizeof(resp->type));
-      resp->file_count = 0;
-      resp->text_length = (int)strlen(busy_text);
-      // resp->length = resp->text_length;
-      resp->text = (char*)malloc((size_t)resp->text_length);
-      if (resp->text != NULL) {
-        memcpy(resp->text, busy_text, (size_t)resp->text_length);
-        iw_prompt_encode(resp, &encoded, &encoded_size);
-      }
-    }
-  }
-
-  if (encoded != NULL && encoded_size > 0) {
-    unsigned char* out = (unsigned char*)malloc(LWS_PRE + encoded_size);
-    if (out != NULL) {
-      memcpy(out + LWS_PRE, encoded, encoded_size);
-      lws_write(wsi, out + LWS_PRE, encoded_size, LWS_WRITE_BINARY);
-      free(out);
-    }
-  } else {
-    unsigned char buf[LWS_PRE + 16];
-    unsigned char* p = &buf[LWS_PRE];
-    size_t n = strlen(busy_text);
-    memcpy(p, busy_text, n);
-    lws_write(wsi, p, n, LWS_WRITE_TEXT);
-  }
-
-  if (encoded != NULL) {
-    free(encoded);
-  }
-  if (resp != NULL) {
-    iw_prompt_free(resp);
-  }
-  if (req != NULL) {
-    iw_prompt_free(req);
-  }
+/*!
+** @brief Send a generation response over WebSocket after encoding content.
+**
+** This function builds an `iw_generation` message, encodes it into a binary
+** buffer, and sends it via libwebsockets using `lws_write`.
+**
+** @param wsi
+**   Pointer to the active WebSocket connection (libwebsockets context).
+**
+** @param request
+**   Request identifier associated with this response.
+**
+** @param content
+**   Null-terminated string containing the text payload to send.
+**
+** @note
+** - The function allocates temporary buffers for encoding and transmission.
+** - Caller must ensure `wsi` is valid and writable.
+** - Uses LWS_PRE offset as required by libwebsockets.
+**
+** @warning
+** - No NULL checks are performed on `content` or allocation results.
+** - Potential memory allocation failure is not handled.
+** - Return values from encoding and `lws_write` are not validated.
+**
+** @details
+** Workflow:
+** 1. Initialize generation object.
+** 2. Set metadata (magic, request, text length, text).
+** 3. Encode into binary buffer.
+** 4. Allocate WebSocket buffer with LWS_PRE padding.
+** 5. Copy encoded data into buffer.
+** 6. Send using `lws_write` with binary flag.
+** 7. Free allocated resources.
+**
+** @note
+** - The caller is responsible for ensuring thread safety.
+** - The lifecycle of `generation` depends on `iw_generation_encode`
+**   (assumed to internally manage or transfer ownership).
+*/
+static void 
+iw_respond_generation(struct lws* wsi, long request, const char* content)
+{
+  unsigned char* encoded_reply = NULL;
+  size_t encoded_reply_size = 0;
+  size_t len = strlen(content);
+  iw_generation_p generation = iw_generation_init();
+  iw_generation_set_status(generation, "SC", 2);
+  iw_generation_set_magic(generation, 287454020);
+  iw_generation_set_request(generation, request);
+  iw_generation_set_text_length(generation, len);
+  iw_generation_set_text(generation, content, len);
+  
+  iw_generation_encode(generation, &encoded_reply, &encoded_reply_size);
+  unsigned char* buf = (unsigned char*)malloc(LWS_PRE + encoded_reply_size);
+  memcpy(buf + LWS_PRE, encoded_reply, encoded_reply_size);
+  lws_write(wsi, buf + LWS_PRE, encoded_reply_size, LWS_WRITE_BINARY);
+  free(encoded_reply);
+  free(buf);
 }
 
 /*!
@@ -266,8 +287,11 @@ iw_send_busy(struct lws* wsi, const void* in, size_t len)
 ** @return int   0 on success
 */
 static int 
-iw_request_process(struct lws* wsi, enum lws_callback_reasons reason,
-                   void* user, void* in, size_t len) {
+iw_request_process(struct lws* wsi, 
+                   enum lws_callback_reasons reason,
+                   void* user, 
+                   void* in, 
+                   size_t len) {
   switch (reason) 
   {
     case LWS_CALLBACK_ESTABLISHED:
@@ -279,12 +303,12 @@ iw_request_process(struct lws* wsi, enum lws_callback_reasons reason,
       size_t encoded_reply_size = 0;
       printf("[WS] received request: %d bytes\n", (int)len);
       if (lws_frame_is_binary(wsi)) {
-        iw_dump_binary_packet_to_file((const unsigned char*)in, len);
+        iw_dump_packet((const unsigned char*)in, len);
       }
 
       if (g_server_busy) {
         fprintf(stderr, "[WS] busy: reject new request\n");
-        iw_send_busy(wsi, in, len);
+        iw_respond_busy(wsi);
         break;
       }
 
@@ -322,20 +346,11 @@ iw_request_process(struct lws* wsi, enum lws_callback_reasons reason,
                            (size_t)strlen("invalid coding packet"));
           return -1;
         }
-        iw_exec_shell_capture("ls", (char*[]){"ls", "-l", "./", NULL}, NULL, 0, "output.txt");
+        // 模拟执行
+        iw_capture_shell("ls", (char*[]){"ls", "-l", "./", NULL}, NULL, 0, "output.txt");
 
-        iw_generation_p generation = iw_generation_init();
-        iw_generation_set_magic(generation, 287454020);
-        iw_generation_set_request(generation, coding->request);
-        iw_generation_set_text_length(generation, 11);
-        iw_generation_set_text(generation, "hello world", 11);
+        iw_respond_generation(wsi, coding->request, "hello world");
         
-        iw_generation_encode(generation, &encoded_reply, &encoded_reply_size);
-        unsigned char* buf = (unsigned char*)malloc(LWS_PRE + encoded_reply_size);
-        memcpy(buf + LWS_PRE, encoded_reply, encoded_reply_size);
-        free(encoded_reply);
-        lws_write(wsi, buf + LWS_PRE, encoded_reply_size, LWS_WRITE_BINARY);
-        free(buf);
       } else {
         fprintf(stderr, "[WS] invalid type: %c%c\n", type[0], type[1]);
         lws_close_reason(wsi,

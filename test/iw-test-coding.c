@@ -128,7 +128,7 @@ iw_coding_ws_callback(struct lws* wsi,
     }
 
     case LWS_CALLBACK_CLIENT_RECEIVE: {
-      printf("[coding-test] received response (%zu bytes)\n", len);
+      printf("[coding-test] received response (%zu bytes)", len);
       iw_client_stop();
       break;
     }
@@ -186,7 +186,7 @@ run_local_round_trip(void)
   assert(encoded != NULL);
   printf("  encoded coding packet: %zu bytes\n", encoded_size);
 
-  decoded = iw_generation_decode(encoded, encoded_size);
+  decoded = iw_coding_decode(encoded, encoded_size);
   assert(decoded != NULL);
   assert(decoded->magic == 287454020);
   assert(memcmp(decoded->type, "GN", 2) == 0);
@@ -196,7 +196,7 @@ run_local_round_trip(void)
   assert(decoded->text != NULL);
   assert(memcmp(decoded->text, text, (size_t)decoded->text_length) == 0);
 
-  iw_generation_free(decoded);
+  iw_coding_free(decoded);
   free(encoded);
 
   printf("  local round-trip OK\n");

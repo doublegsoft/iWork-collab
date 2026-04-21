@@ -126,6 +126,9 @@ generation<
   @name(label='请求标识')
   request: long,
 
+  @name(label='状态')
+  status: enum[BS:BUSY('繁忙'),SC:SUCCESS('成功'),ER:ERROR('错误')],
+
   @name(label='文本长度')
   text_length: integer,
 

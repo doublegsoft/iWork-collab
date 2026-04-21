@@ -308,6 +308,7 @@ iw_generation_init(void)
   iw_generation_p ret = (iw_generation_p) malloc(sizeof(iw_generation_t));
   ret->magic = INT_MIN;
   ret->request = INT_MIN;
+  ret->status[0] = '\0';
   ret->text_length = INT_MIN;
   ret->text = NULL;
   return ret;
@@ -333,6 +334,12 @@ iw_generation_set_request(iw_generation_p generation, long value)
   generation->request = value;
 }
 
+void
+iw_generation_set_status(iw_generation_p generation, const char* value, size_t len)
+{
+  memcpy(generation->status, value, len);
+}    
+    
 void
 iw_generation_set_text_length(iw_generation_p generation, int value)
 {

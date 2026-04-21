@@ -640,6 +640,8 @@ iw_generation_decode_test(void)
   memset(&generation->magic, 0xAA, 4);
   // 初始化属性: request
   memset(&generation->request, 0xAA, 8);
+  // 初始化属性: status
+  memset(&generation->status, 0xAA, 2);
   // 初始化属性: text_length
   generation->text_length = 100; 
   // 初始化属性: text
@@ -677,6 +679,8 @@ iw_generation_decode_test(void)
   assert(memcmp(&source_obj.magic, &decoded_obj->magic, 4) == 0);
   // 验证固定长度字段: request
   assert(memcmp(&source_obj.request, &decoded_obj->request, 8) == 0);
+  // 验证固定长度字段: status
+  assert(memcmp(source_obj.status, decoded_obj->status, 2) == 0);
   // 验证固定长度字段: text_length
   assert(memcmp(&source_obj.text_length, &decoded_obj->text_length, 4) == 0);
   // 验证固定长度字段: text
@@ -713,6 +717,9 @@ iw_generation_encode_test(void)
   // 初始化属性: request
   memset(&generation->request, 0xAA, 8);
   expected_total_size += 8;
+  // 初始化属性: status
+  memset(&generation->status, 0xAA, 2);
+  expected_total_size += 2;
   // 初始化属性: text_length
   generation->text_length = 100; 
   expected_total_size += 4;  

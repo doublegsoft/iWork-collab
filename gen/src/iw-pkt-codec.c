@@ -414,6 +414,9 @@ iw_generation_decode(const unsigned char* bytes,
   // request
   memcpy((void*)&ret->request, bytes + offset, 8);
   offset += 8;
+  // status
+  memcpy((void*)ret->status, bytes + offset, 2);
+  offset += 2;
   // text_length
   memcpy((void*)&ret->text_length, bytes + offset, 4);
   offset += 4;
@@ -437,6 +440,8 @@ iw_generation_encode(const iw_generation_p generation,
   total_bytes += 4; 
   // request    
   total_bytes += 8; 
+  // status    
+  total_bytes += 2; 
   // text_length    
   total_bytes += 4; 
   // text    
@@ -449,6 +454,9 @@ iw_generation_encode(const iw_generation_p generation,
   // request
   memcpy((*bytes) + offset, &generation->request, 8);
   offset += 8;
+  // status
+  memcpy((*bytes) + offset, generation->status, 2);
+  offset += 2;
   // text_length
   memcpy((*bytes) + offset, &generation->text_length, 4);
   offset += 4;

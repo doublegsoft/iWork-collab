@@ -96,6 +96,12 @@ set_target_properties(iw-collab-test PROPERTIES
   BUILD_RPATH "${IWORK_RUNTIME_RPATH}"
 )
 
+################################################################################
+##                                                                            ##
+##                                  iw-server                                 ##
+##                                                                            ##
+################################################################################
+
 add_executable(iw-server)
 
 target_sources(iw-server PRIVATE
@@ -106,6 +112,11 @@ target_link_libraries(iw-server PRIVATE
   iw_collab
   ${LIBWEBSOCKETS_LIBRARIES}
   ${LIBUV_LIBRARIES}
+)
+
+set_target_properties(iw-server PROPERTIES
+  BUILD_RPATH "$ORIGIN"
+  INSTALL_RPATH "$ORIGIN"
 )
 
 set_target_properties(iw-server PROPERTIES

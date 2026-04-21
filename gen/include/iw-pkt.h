@@ -64,6 +64,17 @@ typedef enum
 iw_file_type_t;
 
 /*!
+** status
+*/
+typedef enum 
+{
+  STATUS_BUSY,
+  STATUS_SUCCESS,
+  STATUS_ERROR
+} 
+iw_status_t;
+
+/*!
 ** 【提示词】对象。
 */
 typedef struct iw_prompt_s      iw_prompt_t;
@@ -319,6 +330,12 @@ struct iw_generation_s
   */
   // long
   long request;
+
+  /*!
+  ** 【状态】
+  */
+  // string
+  char status[2];
 
   /*!
   ** 【文本长度】
@@ -596,6 +613,12 @@ iw_generation_set_magic(iw_generation_p, int);
 */
 void
 iw_generation_set_request(iw_generation_p, long);
+  
+/*!
+** 设置【生成内容】的【状态】属性值。
+*/
+void
+iw_generation_set_status(iw_generation_p, const char*, size_t);  
   
 /*!
 ** 设置【生成内容】的【文本长度】属性值。
