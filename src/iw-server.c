@@ -348,8 +348,16 @@ iw_request_process(struct lws* wsi,
         g_server_busy = 1;
         // 模拟执行
         // iw_capture_shell("ls", (char*[]){"ls", "-l", "./", NULL}, NULL, 0, "output.txt");
-        iw_capture_shell("cd /export/local/works/doublegsoft.me/myhotkey/03.Development/paws-cli &&  ./script/paws-deepseek-linux-auto.sh", 
-          (char*[]){NULL}, NULL, 0, "output.txt");
+        iw_capture_shell(
+          "/bin/sh",
+          (char*[]){ "sh", "-c",
+            "cd /export/local/works/doublegsoft.me/myhotkey/03.Development/paws-cli && ./script/paws-deepseek-linux-auto.sh",
+            NULL
+          },
+          NULL,
+          0,
+          "output.txt"
+        );
         iw_respond_generation(wsi, coding->request, "hello world");
         g_server_busy = 0;
 
