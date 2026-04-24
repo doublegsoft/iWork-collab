@@ -80,6 +80,14 @@ iw_coding_ws_callback(struct lws* wsi,
       printf("[generation-test] connected\n");
       lws_callback_on_writable(wsi);
       break;
+    
+    case LWS_CALLBACK_TIMER:
+      unsigned char buf[LWS_PRE + 1];
+      unsigned char *p = &buf[LWS_PRE];
+      p[0] = 0; // ping payload（可选）
+      lws_write(wsi, p, 1, LWS_WRITE_PING);
+      lws_set_timer_usecs(wsi, 30 * LWS_USEC_PER_SEC);
+      break;  
 
     case LWS_CALLBACK_CLIENT_WRITEABLE: {
       iw_coding_p coding = NULL;

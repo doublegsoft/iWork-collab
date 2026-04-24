@@ -351,7 +351,7 @@ iw_request_process(struct lws* wsi,
         iw_capture_shell(
           "/bin/sh",
           (char*[]){ "sh", "-c",
-            "export DISPLAY=:0 && export XAUTHORITY=~/.Xauthority && "
+            "export DISPLAY=:1 && export XAUTHORITY=~/.Xauthority && "
             "cd /export/local/works/doublegsoft.me/myhotkey/03.Development/paws-cli && ./script/paws-deepseek-linux.sh",
             NULL
           },
