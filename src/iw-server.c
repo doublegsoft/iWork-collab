@@ -295,6 +295,14 @@ iw_request_process(struct lws* wsi,
   {
     case LWS_CALLBACK_ESTABLISHED:
       printf("[WS] Connection established\n");
+      lws_set_timer_usecs(wsi, 120 * LWS_USEC_PER_SEC);
+      break;
+
+    case LWS_CALLBACK_TIMER:
+      lwsl_user("PING\n");
+      unsigned char buf[LWS_PRE];
+      lws_write(wsi, buf + LWS_PRE, 0, LWS_WRITE_PING);
+      lws_set_timer_usecs(wsi, 120 * LWS_USEC_PER_SEC);
       break;
 
     case LWS_CALLBACK_RECEIVE: {
