@@ -295,6 +295,14 @@ iw_request_process(struct lws* wsi,
   {
     case LWS_CALLBACK_ESTABLISHED:
       printf("[WS] Connection established\n");
+      lws_set_timer_usecs(wsi, 120 * LWS_USEC_PER_SEC);
+      break;
+
+    case LWS_CALLBACK_TIMER:
+      lwsl_user("PING\n");
+      unsigned char buf[LWS_PRE];
+      lws_write(wsi, buf + LWS_PRE, 0, LWS_WRITE_PING);
+      lws_set_timer_usecs(wsi, 120 * LWS_USEC_PER_SEC);
       break;
 
     case LWS_CALLBACK_RECEIVE: {
@@ -351,7 +359,7 @@ iw_request_process(struct lws* wsi,
         iw_capture_shell(
           "/bin/sh",
           (char*[]){ "sh", "-c",
-            "export DISPLAY=:0 && export XAUTHORITY=~/.Xauthority && "
+            "export DISPLAY=:1 && export XAUTHORITY=~/.Xauthority && "
             "cd /export/local/works/doublegsoft.me/myhotkey/03.Development/paws-cli && ./script/paws-deepseek-linux.sh",
             NULL
           },
