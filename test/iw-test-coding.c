@@ -225,7 +225,7 @@ run_server_coding_test(void)
   }
 
   client_info.context = g_context;
-  client_info.address = "localhost";
+  client_info.address = "10.12.100.46";
   client_info.port = iw_ws_port;
   client_info.path = iw_ws_path;
   client_info.host = client_info.address;
