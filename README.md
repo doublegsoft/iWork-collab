@@ -43,8 +43,8 @@ filepath: <文件路径>
 ```
 
 cmake ../.. -DLWS_WITH_LIBUV=ON -DLWS_WITH_TLS=OFF -DLWS_WITH_SSL=OFF   \
--DLIBUV_INCLUDE_DIRS=/export/local/works/doublegsoft.ai/iWork/03.Development/iWork-collab/3rd/libuv-1.52.1/include   \
--DLIBUV_LIBRARIES=/export/local/works/doublegsoft.ai/iWork/03.Development/iWork-collab/3rd/libuv-1.52.1/build/linux/libuv.so
+-DLIBUV_INCLUDE_DIRS=../../../libuv-1.52.1/include   \
+-DLIBUV_LIBRARIES=../../..//libuv-1.52.1/build/linux/libuv.so
 ```
 
 ## 启动应用
@@ -53,5 +53,5 @@ cmake ../.. -DLWS_WITH_LIBUV=ON -DLWS_WITH_TLS=OFF -DLWS_WITH_SSL=OFF   \
 
 ```
 
-export LD_LIBRARY_PATH=/Users/christian/export/local/works/doublegsoft.ai/iWork/03.Development/iWork-collab/3rd/libuv-1.52.1/build/darwin:/Users/christian/export/local/works/doublegsoft.ai/iWork/03.Development/iWork-3rd/libwebsockets-4.5.4/build/darwin/lib
+export LD_LIBRARY_PATH=../../../iWork-3rd/libuv-1.52.1/build/darwin:../../../iWork-3rd/libwebsockets-4.5.4/build/linux/lib
 ```

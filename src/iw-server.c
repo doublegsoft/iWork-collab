@@ -42,7 +42,7 @@ static int g_server_busy = 0;
 ** @return exit code (>=0), or -1 on error
 */
 static int 
-iw_capture_shell(const char *cmd,
+iw_capture_shell(const char* cmd,
                  char* const argv[],
                  char* output,
                  size_t out_size,
@@ -98,7 +98,6 @@ iw_capture_shell(const char *cmd,
     _exit(127);
   }
 
-  // parent
   close(pipefd[1]);
 
   // 如果没有输出 buffer，就不用读 pipe（避免阻塞仍建议读丢弃）
@@ -346,11 +345,13 @@ iw_request_process(struct lws* wsi,
                            (size_t)strlen("invalid coding packet"));
           return -1;
         }
+        g_server_busy = 1;
         // 模拟执行
-        iw_capture_shell("ls", (char*[]){"ls", "-l", "./", NULL}, NULL, 0, "output.txt");
-
+        // iw_capture_shell("ls", (char*[]){"ls", "-l", "./", NULL}, NULL, 0, "output.txt");
+        iw_capture_shell("/export/local/works/doublegsoft.me/myhotkey/03.Development/paws-cli &&  ./script/paws-deepseek-linux-auto.sh", (char*[]){NULL}, NULL, 0, "output.txt");
         iw_respond_generation(wsi, coding->request, "hello world");
-        
+        g_server_busy = 0;
+
       } else {
         fprintf(stderr, "[WS] invalid type: %c%c\n", type[0], type[1]);
         lws_close_reason(wsi,
@@ -363,94 +364,6 @@ iw_request_process(struct lws* wsi,
       char response_text[256];
       int response_text_len = 0;
 
-      g_server_busy = 1;
-
-      // if (generation != NULL) {
-      //   printf("[WS] generation request=%ld text=%.*s\n",
-      //          generation->request,
-      //          generation->text_length,
-      //          generation->text != NULL ? generation->text : "");
-
-      //   handled = iw_send_generation_ack(wsi, generation);
-      //   iw_generation_free(generation);
-      //   g_server_busy = 0;
-
-      //   if (handled != 0) {
-      //     fprintf(stderr, "[WS] failed to send generation ACK\n");
-      //     return -1;
-      //   }
-      //   break;
-      // }
-
-      // printf("[WS] prompt request=%ld text=%.*s\n",
-      //        request->request,
-      //        request->text_length,
-      //        request->text != NULL ? request->text : "");
-
-      // response = iw_prompt_init();
-      // if (response == NULL) {
-      //   iw_prompt_free(request);
-      //   g_server_busy = 0;
-      //   break;
-      // }
-
-      // response->magic = request->magic;
-      // memcpy(response->version, request->version, sizeof(response->version));
-      // response->request = request->request;
-      // memcpy(response->type, request->type, sizeof(response->type));
-      // response->file_count = 0;
-
-      // response_text_len = snprintf(response_text,
-      //                              sizeof(response_text),
-      //                              "ACK:%.*s",
-      //                              request->text_length,
-      //                              request->text != NULL ? request->text : "");
-      // if (response_text_len < 0) {
-      //   iw_prompt_free(request);
-      //   iw_prompt_free(response);
-      //   g_server_busy = 0;
-      //   break;
-      // }
-      // if ((size_t)response_text_len >= sizeof(response_text)) {
-      //   response_text_len = (int)sizeof(response_text) - 1;
-      // }
-
-      // response->text_length = response_text_len;
-      // response->text = (char*)malloc((size_t)response->text_length);
-      // if (response->text == NULL) {
-      //   iw_prompt_free(request);
-      //   iw_prompt_free(response);
-      //   g_server_busy = 0;
-      //   break;
-      // }
-      // memcpy(response->text, response_text, (size_t)response->text_length);
-
-      // iw_prompt_encode(response, &encoded_reply, &encoded_reply_size);
-      // if (encoded_reply == NULL || encoded_reply_size == 0) {
-      //   iw_prompt_free(request);
-      //   iw_prompt_free(response);
-      //   g_server_busy = 0;
-      //   break;
-      // }
-
-      // {
-      //   unsigned char* out = (unsigned char*)malloc(LWS_PRE + encoded_reply_size);
-      //   if (out == NULL) {
-      //     free(encoded_reply);
-      //     iw_prompt_free(request);
-      //     iw_prompt_free(response);
-      //     g_server_busy = 0;
-      //     break;
-      //   }
-      //   memcpy(out + LWS_PRE, encoded_reply, encoded_reply_size);
-      //   lws_write(wsi, out + LWS_PRE, encoded_reply_size, LWS_WRITE_BINARY);
-      //   free(out);
-      // }
-
-      // free(encoded_reply);
-      // iw_prompt_free(request);
-      // iw_prompt_free(response);
-      g_server_busy = 0;
       break;
     }
 
