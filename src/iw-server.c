@@ -211,6 +211,28 @@ iw_respond_busy(struct lws* wsi)
   free(buf);
 }
 
+void 
+iw_uv_work(uv_work_t* req)
+{
+  iw_capture_shell(
+    "/bin/sh",
+    (char*[]){ "sh", "-c",
+      "export DISPLAY=:1 && export XAUTHORITY=~/.Xauthority && "
+      "cd /export/local/works/doublegsoft.me/myhotkey/03.Development/paws-cli && ./script/paws-deepseek-linux.sh",
+      NULL
+    },
+    NULL,
+    0,
+    "output.txt"
+  );
+}
+
+void 
+iw_uv_done(uv_work_t* req, int status)
+{
+  g_server_busy = 0;
+}
+
 /*!
 ** @brief Send a generation response over WebSocket after encoding content.
 **
@@ -354,8 +376,8 @@ iw_request_process(struct lws* wsi,
           return -1;
         }
         g_server_busy = 1;
+
         // 模拟执行
-        // iw_capture_shell("ls", (char*[]){"ls", "-l", "./", NULL}, NULL, 0, "output.txt");
         iw_capture_shell(
           "/bin/sh",
           (char*[]){ "sh", "-c",
@@ -368,8 +390,6 @@ iw_request_process(struct lws* wsi,
           "output.txt"
         );
         iw_respond_generation(wsi, coding->request, "hello world");
-        g_server_busy = 0;
-
       } else {
         fprintf(stderr, "[WS] invalid type: %c%c\n", type[0], type[1]);
         lws_close_reason(wsi,

@@ -77,7 +77,7 @@ iw_coding_ws_callback(struct lws* wsi,
 
   switch (reason) {
     case LWS_CALLBACK_CLIENT_ESTABLISHED:
-      printf("[generation-test] connected\n");
+      printf("[coding-test] connected\n");
       lws_callback_on_writable(wsi);
       break;
     
@@ -233,7 +233,7 @@ run_server_coding_test(void)
   }
 
   client_info.context = g_context;
-  client_info.address = "10.12.100.46";
+  client_info.address = "10.12.100.82";
   client_info.port = iw_ws_port;
   client_info.path = iw_ws_path;
   client_info.host = client_info.address;
