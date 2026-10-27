@@ -63,6 +63,88 @@ static void signal_cb(uv_signal_t* handle, int signum) {
   uv_stop(handle->loop);
 }
 
+
+#define BUFFER_SIZE 4096
+
+/**
+ * @brief 执行 Bash Shell 命令的 Net Handler 回调函数
+ * 
+ * @param req       请求帧（包含要执行的 shell 命令）
+ * @param resp      响应帧（用于写回 shell 执行结果）
+ * @param user_data 用户上下文数据（可选）
+ * @return int      0: 成功, -1: 失败
+ */
+int tgr_net_bash_handler(const tgr_frame_p req, tgr_frame_p resp, void* user_data) {
+  if (req == NULL || resp == NULL) {
+    return -1;
+  }
+
+  // 1. 从 req 中获取命令字符串
+  // 注意：这里假设 req->data 是以 '\0' 结尾的字符串命令，如 "ls -l /tmp"
+  // 如果你的 tgr_frame 提供了 API，比如 tgr_frame_get_data(req)，请替换这里
+  const char* cmd = (const char*)req->data; 
+  if (cmd == NULL || strlen(cmd) == 0) {
+    // 错误处理：空命令
+    return -1;
+  }
+
+  // 2. 为了同时捕获 stderr，将命令包装为重定向错误输出
+  // 组装格式类似于: "bash -c 'your_command' 2>&1"
+  char full_cmd[BUFFER_SIZE];
+  sprintf(full_cmd, "bash -c 'cd /export/local/works/doublegsoft.me/myhotkey/03.Development/paws-cli/ && ./script/paws-deepseek-codewiki.sh ' 2>&1", cmd);
+
+  // 3. 执行 popen
+  FILE* fp = popen(full_cmd, "r");
+  if (fp == NULL) {
+    perror("popen failed");
+    return -1;
+  }
+
+  // 4. 读取命令输出并写入 resp
+  char chunk[512];
+  
+  // 方式 A：如果 resp 提供了追加数据的接口（推荐，防止输出过大）
+  // 例如：tgr_frame_append(resp, chunk, bytes_read);
+  
+  // 方式 B：手动填充 resp 的缓冲区（假设 resp->data 预分配了空间）
+  size_t total_read = 0;
+  char* output_ptr = (char*)resp->data;
+  size_t max_resp_size = BUFFER_SIZE; // 假设允许的最大响应长度
+
+  while (fgets(chunk, sizeof(chunk), fp) != NULL) {
+    size_t chunk_len = strlen(chunk);
+    
+    // 防止缓冲区溢出
+    if (total_read + chunk_len < max_resp_size) {
+      memcpy(output_ptr + total_read, chunk, chunk_len);
+      total_read += chunk_len;
+    } else {
+      // 输出截断处理
+      break; 
+    }
+  }
+  
+  // 补齐字符串结束符
+  if (total_read < max_resp_size) {
+    output_ptr[total_read] = '\0';
+  } else {
+    output_ptr[max_resp_size - 1] = '\0';
+  }
+
+  // 设置响应大小 (根据实际 tgr_frame 字段进行调整)
+  resp->size = total_read; 
+
+  // 5. 关闭管道并获取退出状态码
+  int status = pclose(fp);
+  int exit_code = -1;
+  if (WIFEXITED(status)) {
+    exit_code = WEXITSTATUS(status);
+  }
+
+  // 如果 shell 执行返回非 0，你可以选择返回错误，或者将状态写入 resp header
+  return (exit_code == 0) ? 0 : -1;
+}
+
 int main(void) 
 {
   // struct lws_context_creation_info info;
@@ -99,5 +181,5 @@ int main(void)
   // uv_loop_close(loop);
 
   // return 0;
-  tgr_net_serve(5447, NULL, NULL);
+  tgr_net_serve(5447, tgr_net_bash_handler, NULL);
 }
