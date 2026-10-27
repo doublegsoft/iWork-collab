@@ -47,6 +47,28 @@ cmake ../.. -DLWS_WITH_LIBUV=ON -DLWS_WITH_TLS=OFF -DLWS_WITH_SSL=OFF   \
 -DLIBUV_LIBRARIES=../../..//libuv-1.52.1/build/linux/libuv.so
 ```
 
+## together
+
+### Build
+
+```
+export BUILD=darwin
+CURRENT_DIR=$(PWD)
+
+mkdir -p $CURRENT_DIR/3rd/together/3rd/argparse-1.1.0/build/$BUILD \
+&& cd $CURRENT_DIR/3rd/together/3rd/argparse-1.1.0/build/$BUILD \
+&& cmake ../.. && make
+
+mkdir -p $CURRENT_DIR/3rd/together/3rd/googletest-1.18.0/build/$BUILD \
+&& cd $CURRENT_DIR/3rd/together/3rd/googletest-1.18.0/build/$BUILD \
+&& cmake ../.. && make
+
+mkdir -p $CURRENT_DIR/3rd/together/build/$BUILD \
+&& cd $CURRENT_DIR/3rd/together/build/$BUILD \
+&& cmake ../.. && make
+
+```
+
 ## 启动应用
 
 **环境变量**

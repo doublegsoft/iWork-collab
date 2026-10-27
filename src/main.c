@@ -10,6 +10,8 @@
 #include <string.h>
 #include <stdio.h>
 
+#include <together-net.h>
+
 static struct lws_context* context = NULL;
 
 static int callback_minimal(struct lws* wsi, enum lws_callback_reasons reason,
@@ -63,38 +65,39 @@ static void signal_cb(uv_signal_t* handle, int signum) {
 
 int main(void) 
 {
-  struct lws_context_creation_info info;
-  uv_loop_t* loop = uv_default_loop();
+  // struct lws_context_creation_info info;
+  // uv_loop_t* loop = uv_default_loop();
   
-  // Setup graceful exit on CTRL+C
-  uv_signal_t sigint;
-  uv_signal_init(loop, &sigint);
-  uv_signal_start(&sigint, signal_cb, SIGINT);
+  // // Setup graceful exit on CTRL+C
+  // uv_signal_t sigint;
+  // uv_signal_init(loop, &sigint);
+  // uv_signal_start(&sigint, signal_cb, SIGINT);
 
-  memset(&info, 0, sizeof info);
-  info.port = 8848;
-  info.protocols = protocols;
+  // memset(&info, 0, sizeof info);
+  // info.port = 8848;
+  // info.protocols = protocols;
   
-  info.options = LWS_SERVER_OPTION_LIBUV; 
+  // info.options = LWS_SERVER_OPTION_LIBUV; 
   
-  // Provide the existing libuv loop to LWS (Foreign loop)
-  void* foreign_loops[1];
-  foreign_loops[0] = loop;
-  info.foreign_loops = foreign_loops;
+  // // Provide the existing libuv loop to LWS (Foreign loop)
+  // void* foreign_loops[1];
+  // foreign_loops[0] = loop;
+  // info.foreign_loops = foreign_loops;
 
-  context = lws_create_context(&info);
-  if (!context) {
-    fprintf(stderr, "libwebsockets init failed\n");
-    return -1;
-  }
+  // context = lws_create_context(&info);
+  // if (!context) {
+  //   fprintf(stderr, "libwebsockets init failed\n");
+  //   return -1;
+  // }
 
-  printf("WebSocket Server started on ws://localhost:%d\n", info.port);
-  printf("Press CTRL+C to stop.\n");
+  // printf("WebSocket Server started on ws://localhost:%d\n", info.port);
+  // printf("Press CTRL+C to stop.\n");
 
-  uv_run(loop, UV_RUN_DEFAULT);
+  // uv_run(loop, UV_RUN_DEFAULT);
 
-  lws_context_destroy(context);
-  uv_loop_close(loop);
+  // lws_context_destroy(context);
+  // uv_loop_close(loop);
 
-  return 0;
+  // return 0;
+  tgr_net_serve(5447, NULL, NULL);
 }

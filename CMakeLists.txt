@@ -46,16 +46,29 @@ set(LIBUV_INCLUDE_DIR                       "${LIBUV_DIR}/include")
 set(LIBUV_LIBRARY_DIR                       "${LIBUV_DIR}/${BUILD}")
 set(LIBUV_LIBRARIES                         uv)
 
+################################################################################
+##                                                                            ##
+##                                  together                                  ##
+##                                                                            ##
+################################################################################
+set(TOGETHER_DIR                            "${CMAKE_CURRENT_SOURCE_DIR}/3rd/together")
+set(TOGETHER_INCLUDE_DIR                    "${TOGETHER_DIR}/src" 
+                                            "${TOGETHER_DIR}/gen")
+set(TOGETHER_LIBRARY_DIR                    "${TOGETHER_DIR}/${BUILD}")
+set(TOGETHER_LIBRARIES                      together)
+
 include_directories(
   "include"
   "gen/include"
   ${LIBWEBSOCKETS_INCLUDE_DIR}
   ${LIBUV_INCLUDE_DIR}
+  ${TOGETHER_INCLUDE_DIR}
 )
 
 link_directories(
   ${LIBWEBSOCKETS_LIBRARY_DIR}
   ${LIBUV_LIBRARY_DIR}
+  ${TOGETHER_LIBRARY_DIR}
 )
 
 set(IWORK_RUNTIME_RPATH
@@ -90,6 +103,7 @@ target_link_libraries(iw-collab-test PRIVATE
   iw_collab
   ${LIBWEBSOCKETS_LIBRARIES}
   ${LIBUV_LIBRARIES}
+  ${TOGETHER_LIBRARIES}
 )
 
 set_target_properties(iw-collab-test PROPERTIES
