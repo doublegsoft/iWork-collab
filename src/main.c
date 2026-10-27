@@ -82,16 +82,16 @@ int tgr_net_bash_handler(const tgr_frame_p req, tgr_frame_p resp, void* user_dat
   // 1. 从 req 中获取命令字符串
   // 注意：这里假设 req->data 是以 '\0' 结尾的字符串命令，如 "ls -l /tmp"
   // 如果你的 tgr_frame 提供了 API，比如 tgr_frame_get_data(req)，请替换这里
-  const char* cmd = (const char*)req->data; 
-  if (cmd == NULL || strlen(cmd) == 0) {
-    // 错误处理：空命令
-    return -1;
-  }
+  // const char* cmd = (const char*)req->data; 
+  // if (cmd == NULL || strlen(cmd) == 0) {
+  //   // 错误处理：空命令
+  //   return -1;
+  // }
 
   // 2. 为了同时捕获 stderr，将命令包装为重定向错误输出
   // 组装格式类似于: "bash -c 'your_command' 2>&1"
   char full_cmd[BUFFER_SIZE];
-  sprintf(full_cmd, "bash -c 'cd /export/local/works/doublegsoft.me/myhotkey/03.Development/paws-cli/ && ./script/paws-deepseek-codewiki.sh ' 2>&1", cmd);
+  sprintf(full_cmd, "bash -c 'cd /export/local/works/doublegsoft.me/myhotkey/03.Development/paws-cli/ && ./script/paws-deepseek-codewiki.sh ' 2>&1");
 
   // 3. 执行 popen
   FILE* fp = popen(full_cmd, "r");
@@ -108,31 +108,31 @@ int tgr_net_bash_handler(const tgr_frame_p req, tgr_frame_p resp, void* user_dat
   
   // 方式 B：手动填充 resp 的缓冲区（假设 resp->data 预分配了空间）
   size_t total_read = 0;
-  char* output_ptr = (char*)resp->data;
+  // char* output_ptr = (char*)resp->data;
   size_t max_resp_size = BUFFER_SIZE; // 假设允许的最大响应长度
 
-  while (fgets(chunk, sizeof(chunk), fp) != NULL) {
-    size_t chunk_len = strlen(chunk);
+  // while (fgets(chunk, sizeof(chunk), fp) != NULL) {
+  //   size_t chunk_len = strlen(chunk);
     
-    // 防止缓冲区溢出
-    if (total_read + chunk_len < max_resp_size) {
-      memcpy(output_ptr + total_read, chunk, chunk_len);
-      total_read += chunk_len;
-    } else {
-      // 输出截断处理
-      break; 
-    }
-  }
+  //   // 防止缓冲区溢出
+  //   if (total_read + chunk_len < max_resp_size) {
+  //     memcpy(output_ptr + total_read, chunk, chunk_len);
+  //     total_read += chunk_len;
+  //   } else {
+  //     // 输出截断处理
+  //     break; 
+  //   }
+  // }
   
   // 补齐字符串结束符
-  if (total_read < max_resp_size) {
-    output_ptr[total_read] = '\0';
-  } else {
-    output_ptr[max_resp_size - 1] = '\0';
-  }
+  // if (total_read < max_resp_size) {
+  //   output_ptr[total_read] = '\0';
+  // } else {
+  //   output_ptr[max_resp_size - 1] = '\0';
+  // }
 
   // 设置响应大小 (根据实际 tgr_frame 字段进行调整)
-  resp->size = total_read; 
+  // resp->size = total_read; 
 
   // 5. 关闭管道并获取退出状态码
   int status = pclose(fp);
