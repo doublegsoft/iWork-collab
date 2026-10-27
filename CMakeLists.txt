@@ -95,7 +95,7 @@ endif()
 add_executable(iw-node)
 
 target_sources(iw-node PRIVATE
-  src/main.c
+  src/iw-node.c
 )
 
 # 3. 链接库（最重要的一步）
