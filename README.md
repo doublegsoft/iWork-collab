@@ -52,8 +52,8 @@ cmake ../.. -DLWS_WITH_LIBUV=ON -DLWS_WITH_TLS=OFF -DLWS_WITH_SSL=OFF   \
 ### Build
 
 ```
-export BUILD=darwin
-CURRENT_DIR=$(PWD)
+export BUILD=linux
+CURRENT_DIR=$(pwd)
 
 mkdir -p $CURRENT_DIR/3rd/together/3rd/argparse-1.1.0/build/$BUILD \
 && cd $CURRENT_DIR/3rd/together/3rd/argparse-1.1.0/build/$BUILD \
