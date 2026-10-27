@@ -91,8 +91,9 @@ int tgr_net_bash_handler(const tgr_frame_p req, tgr_frame_p resp, void* user_dat
   // 2. 为了同时捕获 stderr，将命令包装为重定向错误输出
   // 组装格式类似于: "bash -c 'your_command' 2>&1"
   char full_cmd[BUFFER_SIZE];
-  sprintf(full_cmd, "bash -c 'cd /export/local/works/doublegsoft.me/myhotkey/03.Development/paws-cli/ && ./script/paws-deepseek-codewiki.sh ' 2>&1");
-
+  // sprintf(full_cmd, "bash -c 'cd /export/local/works/doublegsoft.me/myhotkey/03.Development/paws-cli/ && ./script/paws-deepseek-codewiki.sh ' 2>&1");
+  sprintf(full_cmd, "ls -la /tmp");
+  
   // 3. 执行 popen
   FILE* fp = popen(full_cmd, "r");
   if (fp == NULL) {
@@ -103,36 +104,20 @@ int tgr_net_bash_handler(const tgr_frame_p req, tgr_frame_p resp, void* user_dat
   // 4. 读取命令输出并写入 resp
   char chunk[512];
   
-  // 方式 A：如果 resp 提供了追加数据的接口（推荐，防止输出过大）
-  // 例如：tgr_frame_append(resp, chunk, bytes_read);
-  
-  // 方式 B：手动填充 resp 的缓冲区（假设 resp->data 预分配了空间）
   size_t total_read = 0;
-  // char* output_ptr = (char*)resp->data;
   size_t max_resp_size = BUFFER_SIZE; // 假设允许的最大响应长度
 
-  // while (fgets(chunk, sizeof(chunk), fp) != NULL) {
-  //   size_t chunk_len = strlen(chunk);
-    
-  //   // 防止缓冲区溢出
-  //   if (total_read + chunk_len < max_resp_size) {
-  //     memcpy(output_ptr + total_read, chunk, chunk_len);
-  //     total_read += chunk_len;
-  //   } else {
-  //     // 输出截断处理
-  //     break; 
-  //   }
-  // }
-  
-  // 补齐字符串结束符
-  // if (total_read < max_resp_size) {
-  //   output_ptr[total_read] = '\0';
-  // } else {
-  //   output_ptr[max_resp_size - 1] = '\0';
-  // }
-
-  // 设置响应大小 (根据实际 tgr_frame 字段进行调整)
-  // resp->size = total_read; 
+  while (fgets(chunk, sizeof(chunk), fp) != NULL) {
+    size_t chunk_len = strlen(chunk);
+    fputs(chunk, stdout);
+    // 防止缓冲区溢出
+    if (total_read + chunk_len < max_resp_size) {
+      total_read += chunk_len;
+    } else {
+      // 输出截断处理
+      break; 
+    }
+  }
 
   // 5. 关闭管道并获取退出状态码
   int status = pclose(fp);

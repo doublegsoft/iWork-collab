@@ -153,6 +153,12 @@ set_target_properties(iw-client PROPERTIES
   BUILD_RPATH "${IWORK_RUNTIME_RPATH}"
 )
 
+add_executable(iw-send-test)
+
+target_sources(iw-send-test PRIVATE
+  test/iw-send-test.c
+)
+
 add_executable(perf)
 
 target_sources(perf PRIVATE
