@@ -92,21 +92,21 @@ elseif (UNIX)
   set(LIBNAME                  "iw_collab")
 endif()
 
-add_executable(iw-collab-test)
+add_executable(iw-node)
 
-target_sources(iw-collab-test PRIVATE
+target_sources(iw-node PRIVATE
   src/main.c
 )
 
 # 3. 链接库（最重要的一步）
-target_link_libraries(iw-collab-test PRIVATE
+target_link_libraries(iw-node PRIVATE
   iw_collab
   ${LIBWEBSOCKETS_LIBRARIES}
   ${LIBUV_LIBRARIES}
   ${TOGETHER_LIBRARIES}
 )
 
-set_target_properties(iw-collab-test PROPERTIES
+set_target_properties(iw-node PROPERTIES
   BUILD_RPATH "${IWORK_RUNTIME_RPATH}"
 )
 
