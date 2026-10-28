@@ -139,7 +139,7 @@ int main(void) {
   req_frame.payload_len = strlen(bash_cmd) + 1;
   req_frame.payload = (uint8_t*)bash_cmd;
 
-  const char* target_ip = "127.0.0.1"; // "10.12.100.120";
+  const char* target_ip = "10.12.100.120";
   uint16_t target_port = 5447;
 
   printf("Sending frame to %s:%d...\n", target_ip, target_port);
