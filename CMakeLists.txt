@@ -48,6 +48,20 @@ set(LIBUV_LIBRARIES                         uv)
 
 ################################################################################
 ##                                                                            ##
+##                                    libpq                                   ##
+##                                                                            ##
+################################################################################
+set(LIBPQ_DIR                               "${CMAKE_CURRENT_SOURCE_DIR}/../iWork-3rd/pgsql")
+set(LIBPQ_INCLUDE_DIR                       "${LIBPQ_DIR}/include")
+if(APPLE)
+set(LIBPQ_LIBRARY_DIR                       "/opt/homebrew/Cellar/libpq/18.4/lib")
+else()
+set(LIBPQ_LIBRARY_DIR                       "${LIBPQ_DIR}/lib")
+endif()
+set(LIBPQ_LIBRARIES                         pq)
+
+################################################################################
+##                                                                            ##
 ##                                  together                                  ##
 ##                                                                            ##
 ################################################################################
@@ -57,18 +71,93 @@ set(TOGETHER_INCLUDE_DIR                    "${TOGETHER_DIR}/src"
 set(TOGETHER_LIBRARY_DIR                    "${TOGETHER_DIR}/${BUILD}")
 set(TOGETHER_LIBRARIES                      together)
 
+################################################################################
+##                                                                            ##
+##                                   goolib                                   ##
+##                                                                            ##
+################################################################################
+set(GOOLIB_DIR                              "${CMAKE_CURRENT_SOURCE_DIR}/3rd/goolib")
+set(GOOLIB_INCLUDE_DIR                      "${GOOLIB_DIR}/src")
+set(GOOLIB_LIBRARY_DIR                      "${GOOLIB_DIR}/${BUILD}")
+set(GOOLIB_LIBRARIES                        goolib)
+
+################################################################################
+##                                                                            ##
+##                                   openssl                                   ##
+##                                                                            ##
+################################################################################
+set(OPENSSL_DIR                             "${GOOLIB_DIR}/3rd/openssl-3.6.0")
+set(OPENSSL_INCLUDE_DIR                     "${OPENSSL_DIR}/include"
+                                            "${OPENSSL_DIR}/${BUILD}/include")
+set(OPENSSL_LIBRARY_DIR                     "${OPENSSL_DIR}/${BUILD}")
+set(OPENSSL_LIBRARIES                       crypto ssl)
+
+################################################################################
+##                                                                            ##
+##                                    curl                                    ##
+##                                                                            ##
+################################################################################
+set(CURL_DIR                             "${GOOLIB_DIR}/3rd/curl-8.16.0")
+set(CURL_INCLUDE_DIR                     "${CURL_DIR}/include")
+set(CURL_LIBRARY_DIR                     "${CURL_DIR}/${BUILD}")
+set(CURL_LIBRARIES                       curl)
+
 include_directories(
   "include"
   "gen/include"
   ${LIBWEBSOCKETS_INCLUDE_DIR}
   ${LIBUV_INCLUDE_DIR}
+  ${LIBPQ_INCLUDE_DIR}
   ${TOGETHER_INCLUDE_DIR}
+  ${GOOLIB_INCLUDE_DIR}
+  ${OPENSSL_INCLUDE_DIR}
 )
 
 link_directories(
   ${LIBWEBSOCKETS_LIBRARY_DIR}
   ${LIBUV_LIBRARY_DIR}
+  ${LIBPQ_LIBRARY_DIR}
   ${TOGETHER_LIBRARY_DIR}
+  ${OPENSSL_LIBRARY_DIR}
+  ${CURL_LIBRARY_DIR}
+)
+
+################################################################################
+##                                                                            ##
+##                                    tool                                    ##
+##                                                                            ##
+################################################################################
+
+## gaussdb import tool
+add_executable(iw-gaussdbimp)
+
+target_sources(iw-gaussdbimp PRIVATE
+  "src/tool/iw-gaussdbimp.c"
+)
+
+target_link_libraries(iw-gaussdbimp PRIVATE
+  ${LIBPQ_LIBRARIES}
+)
+
+## mail monitor tool
+add_executable(iw-mailmon)
+
+target_sources(iw-mailmon PRIVATE
+  "src/tool/iw-mailmon.c"
+  "${GOOLIB_DIR}/src/goolib-mail.c"
+  "${GOOLIB_DIR}/src/internal/smtp.c"
+)
+
+target_link_libraries(iw-mailmon PRIVATE
+  ${OPENSSL_LIBRARIES}
+  ${CURL_LIBRARIES}
+)
+
+## unpack markdown tool
+add_executable(iw-unpack)
+
+target_sources(iw-unpack PRIVATE
+  src/iw-unpack.c
 )
 
 set(IWORK_RUNTIME_RPATH
@@ -157,6 +246,10 @@ add_executable(iw-send-test)
 
 target_sources(iw-send-test PRIVATE
   test/iw-send-test.c
+)
+
+target_link_libraries(iw-send-test PRIVATE
+  together
 )
 
 add_executable(perf)
