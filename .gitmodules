@@ -1,3 +1,6 @@
 [submodule "3rd/together"]
 	path = 3rd/together
 	url = https://github.com/doublegsoft/together.git
+[submodule "3rd/goolib"]
+	path = 3rd/goolib
+	url = https://github.com/doublegsoft/goolib.git
