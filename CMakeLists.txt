@@ -62,6 +62,16 @@ set(LIBPQ_LIBRARIES                         pq)
 
 ################################################################################
 ##                                                                            ##
+##                                     cui                                    ##
+##                                                                            ##
+################################################################################
+set(CUI_DIR                               "${CMAKE_CURRENT_SOURCE_DIR}/../iWork-3rd/CUI-1.1.0")
+set(CUI_INCLUDE_DIR                       "${CUI_DIR}/include")
+set(CUI_LIBRARY_DIR                       "${CUI_DIR}/${BUILD}")
+set(CUI_LIBRARIES                         cui)
+
+################################################################################
+##                                                                            ##
 ##                                  together                                  ##
 ##                                                                            ##
 ################################################################################
@@ -111,6 +121,7 @@ include_directories(
   ${TOGETHER_INCLUDE_DIR}
   ${GOOLIB_INCLUDE_DIR}
   ${OPENSSL_INCLUDE_DIR}
+  ${CUI_INCLUDE_DIR}
 )
 
 link_directories(
@@ -120,6 +131,7 @@ link_directories(
   ${TOGETHER_LIBRARY_DIR}
   ${OPENSSL_LIBRARY_DIR}
   ${CURL_LIBRARY_DIR}
+  ${CUI_LIBRARY_DIR}
 )
 
 ################################################################################
@@ -276,7 +288,7 @@ target_link_libraries(hello PRIVATE
 
 ################################################################################
 ##                                                                            ##
-##                           iw-pkt-codec-test (gen)                       ##
+##                            iw-pkt-codec-test (gen)                         ##
 ##                                                                            ##
 ################################################################################
 
@@ -340,4 +352,40 @@ target_link_libraries(iw-test-coding PRIVATE
 
 set_target_properties(iw-test-coding PROPERTIES
   BUILD_RPATH "${IWORK_RUNTIME_RPATH}"
+)
+
+################################################################################
+##                                                                            ##
+##                                   DESKTOP                                  ##
+##                                                                            ##
+################################################################################
+if (APPLE)
+  add_executable(iw-abpms)
+
+  target_sources(iw-abpms PRIVATE
+    src/desktop/iw-abpms.c
+  )
+
+  target_link_libraries(iw-abpms PRIVATE
+    ${CUI_LIBRARIES}
+    "-framework Cocoa"
+    "-framework CoreGraphics"
+    "-framework OpenGL"
+    "-framework QuartzCore"
+  )
+endif()
+
+add_executable(iw-gauss)
+
+target_sources(iw-gauss PRIVATE
+  src/desktop/iw-gauss.c
+)
+
+
+target_link_libraries(iw-gauss PRIVATE
+  ${CUI_LIBRARIES}
+  "-framework Cocoa"
+  "-framework CoreGraphics"
+  "-framework OpenGL"
+  "-framework QuartzCore"
 )

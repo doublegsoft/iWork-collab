@@ -77,3 +77,7 @@ mkdir -p $CURRENT_DIR/3rd/together/build/$BUILD \
 
 export LD_LIBRARY_PATH=../../../iWork-3rd/libuv-1.52.1/build/darwin:../../../iWork-3rd/libwebsockets-4.5.4/build/linux/lib
 ```
+
+```
+cmake -DCMAKE_TOOLCHAIN_FILE=../../cmake/toolchain-mingw64.cmake ..
+```
