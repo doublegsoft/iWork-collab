@@ -141,13 +141,13 @@ link_directories(
 ################################################################################
 
 ## gaussdb import tool
-add_executable(iw-gaussdbimp)
+add_executable(iw-gaussimp)
 
-target_sources(iw-gaussdbimp PRIVATE
-  "src/tool/iw-gaussdbimp.c"
+target_sources(iw-gaussimp PRIVATE
+  "src/tool/iw-gaussimp.c"
 )
 
-target_link_libraries(iw-gaussdbimp PRIVATE
+target_link_libraries(iw-gaussimp PRIVATE
   ${LIBPQ_LIBRARIES}
 )
 
