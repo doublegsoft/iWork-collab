@@ -383,19 +383,19 @@ if (APPLE)
     "-framework OpenGL"
     "-framework QuartzCore"
   )
+
+  add_executable(iw-gauss)
+
+  target_sources(iw-gauss PRIVATE
+    src/desktop/iw-gauss.c
+  )
+
+
+  target_link_libraries(iw-gauss PRIVATE
+    ${CUI_LIBRARIES}
+    "-framework Cocoa"
+    "-framework CoreGraphics"
+    "-framework OpenGL"
+    "-framework QuartzCore"
+  )
 endif()
-
-add_executable(iw-gauss)
-
-target_sources(iw-gauss PRIVATE
-  src/desktop/iw-gauss.c
-)
-
-
-target_link_libraries(iw-gauss PRIVATE
-  ${CUI_LIBRARIES}
-  "-framework Cocoa"
-  "-framework CoreGraphics"
-  "-framework OpenGL"
-  "-framework QuartzCore"
-)
