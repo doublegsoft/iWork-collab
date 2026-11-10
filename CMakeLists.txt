@@ -51,12 +51,15 @@ set(LIBUV_LIBRARIES                         uv)
 ##                                    libpq                                   ##
 ##                                                                            ##
 ################################################################################
-set(LIBPQ_DIR                               "${CMAKE_CURRENT_SOURCE_DIR}/../iWork-3rd/pgsql")
+set(LIBPQ_DIR                               "${CMAKE_CURRENT_SOURCE_DIR}/../iWork-3rd/pgsql-windows")
 set(LIBPQ_INCLUDE_DIR                       "${LIBPQ_DIR}/include")
 if(APPLE)
 set(LIBPQ_LIBRARY_DIR                       "/opt/homebrew/Cellar/libpq/18.4/lib")
-else()
+elseif(MINGW)
 set(LIBPQ_LIBRARY_DIR                       "${LIBPQ_DIR}/lib")
+else(LINUX)
+set(LIBPQ_LIBRARY_DIR                       "/usr/lib/x86_64-linux-gnu")
+set(LIBPQ_INCLUDE_DIR                       "/usr/include/postgresql")
 endif()
 set(LIBPQ_LIBRARIES                         pq)
 
