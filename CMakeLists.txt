@@ -165,6 +165,13 @@ target_link_libraries(iw-mailmon PRIVATE
   ${CURL_LIBRARIES}
 )
 
+## sync for maven project
+add_executable(iw-mavensync)
+
+target_sources(iw-mavensync PRIVATE
+  "src/tool/iw-mavensync.c"
+)
+
 ## unpack markdown tool
 add_executable(iw-unpack)
 
